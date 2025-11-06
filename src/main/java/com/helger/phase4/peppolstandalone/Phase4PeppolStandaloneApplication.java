@@ -18,7 +18,6 @@ package com.helger.phase4.peppolstandalone;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * This is the application entrypoint.
@@ -26,7 +25,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  * @author Philip Helger
  */
 @SpringBootApplication
-@EnableScheduling
 public class Phase4PeppolStandaloneApplication
 {
   public static void main (final String [] args)

@@ -27,8 +27,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.helger.base.io.nonblocking.NonBlockingByteArrayInputStream;
 import com.helger.base.string.StringHelper;
 import com.helger.hredelivery.commons.sbdh.HREDeliverySBDHData;
+import com.helger.hredelivery.commons.sbdh.HREDeliverySBDHDataReadException;
 import com.helger.hredelivery.commons.sbdh.HREDeliverySBDHDataReader;
-import com.helger.peppol.sbdh.PeppolSBDHDataReadException;
 import com.helger.peppol.security.PeppolTrustedCA;
 import com.helger.peppol.servicedomain.EPeppolNetwork;
 import com.helger.peppol.sml.ESML;
@@ -44,10 +44,10 @@ import com.helger.security.certificate.TrustedCAChecker;
  * @author Philip Helger
  */
 @RestController
-public class PeppolSenderController
+public class HREDeliverySenderController
 {
   static final String HEADER_X_TOKEN = "X-Token";
-  private static final Logger LOGGER = Phase4LoggerFactory.getLogger (PeppolSenderController.class);
+  private static final Logger LOGGER = Phase4LoggerFactory.getLogger (HREDeliverySenderController.class);
 
   @PostMapping (path = "/sendas4/{senderId}/{receiverId}/{docTypeId}/{processId}",
                 produces = MediaType.APPLICATION_JSON_VALUE)
@@ -90,21 +90,23 @@ public class PeppolSenderController
                  "' and '" +
                  processId +
                  "'");
-    final Phase4HREdeliverySendingReport aSendingReport = PeppolSender.sendPeppolMessageCreatingSbdh (eSML,
-                                                                                                      aAPCA,
-                                                                                                      aPayloadBytes,
-                                                                                                      senderId,
-                                                                                                      receiverId,
-                                                                                                      docTypeId,
-                                                                                                      processId);
+    final Phase4HREdeliverySendingReport aSendingReport = HREDeliverySender.sendPeppolMessageCreatingSbdh (eSML,
+                                                                                                           aAPCA,
+                                                                                                           aPayloadBytes,
+                                                                                                           senderId,
+                                                                                                           receiverId,
+                                                                                                           docTypeId,
+                                                                                                           processId);
 
     // Return as JSON
     return aSendingReport.getAsJsonString ();
   }
 
-  @PostMapping (path = "/sendsbdh", produces = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping (path = "/sendsbdh/{docTypeId}/{processId}", produces = MediaType.APPLICATION_JSON_VALUE)
   public String sendPeppolSbdhMessage (@RequestHeader (name = HEADER_X_TOKEN, required = true) final String xtoken,
-                                       @RequestBody final byte [] aPayloadBytes)
+                                       @RequestBody final byte [] aPayloadBytes,
+                                       @PathVariable final String docTypeId,
+                                       @PathVariable final String processId)
   {
     if (!APConfig.isSendingEnabled ())
     {
@@ -134,7 +136,7 @@ public class PeppolSenderController
     {
       aData = new HREDeliverySBDHDataReader (PeppolIdentifierFactory.INSTANCE).extractData (new NonBlockingByteArrayInputStream (aPayloadBytes));
     }
-    catch (final PeppolSBDHDataReadException ex)
+    catch (final HREDeliverySBDHDataReadException ex)
     {
       // TODO This error handling might be improved to return a status error
       // instead
@@ -146,14 +148,10 @@ public class PeppolSenderController
 
     aSendingReport.setSenderID (aData.getSenderAsIdentifier ());
     aSendingReport.setReceiverID (aData.getReceiverAsIdentifier ());
-    aSendingReport.setDocTypeID (aData.getDocumentTypeAsIdentifier ());
-    aSendingReport.setProcessID (aData.getProcessAsIdentifier ());
     aSendingReport.setSBDHInstanceIdentifier (aData.getInstanceIdentifier ());
 
     final String sSenderID = aData.getSenderAsIdentifier ().getURIEncoded ();
     final String sReceiverID = aData.getReceiverAsIdentifier ().getURIEncoded ();
-    final String sDocTypeID = aData.getDocumentTypeAsIdentifier ().getURIEncoded ();
-    final String sProcessID = aData.getProcessAsIdentifier ().getURIEncoded ();
     LOGGER.info ("Trying to send Peppol " +
                  eStage.name () +
                  " SBDH message from '" +
@@ -161,12 +159,12 @@ public class PeppolSenderController
                  "' to '" +
                  sReceiverID +
                  "' using '" +
-                 sDocTypeID +
+                 docTypeId +
                  "' and '" +
-                 sProcessID +
+                 processId +
                  "'");
 
-    PeppolSender.sendPeppolMessagePredefinedSbdh (aData, eSML, aAPCA, aSendingReport);
+    HREDeliverySender.sendPeppolMessagePredefinedSbdh (aData, eSML, aAPCA, docTypeId, processId, aSendingReport);
 
     // Return result JSON
     return aSendingReport.getAsJsonString ();

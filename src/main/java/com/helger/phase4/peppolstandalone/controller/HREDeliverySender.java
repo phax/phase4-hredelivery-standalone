@@ -56,11 +56,11 @@ import jakarta.annotation.Nonnull;
  * @author Philip Helger
  */
 @Immutable
-public final class PeppolSender
+public final class HREDeliverySender
 {
-  private static final Logger LOGGER = Phase4LoggerFactory.getLogger (PeppolSender.class);
+  private static final Logger LOGGER = Phase4LoggerFactory.getLogger (HREDeliverySender.class);
 
-  private PeppolSender ()
+  private HREDeliverySender ()
   {}
 
   /**
@@ -265,14 +265,21 @@ public final class PeppolSender
    *        The SML to be used for receiver lookup
    * @param aAPCAChecker
    *        The Peppol CA checker to be used.
+   * @param sDocTypeID
+   *        The Peppol document type ID
+   * @param sProcessID
+   *        The Peppol process ID
    * @param aSendingReport
    *        The sending report to be filled.
    */
   static void sendPeppolMessagePredefinedSbdh (@Nonnull final HREDeliverySBDHData aData,
                                                @Nonnull final ISMLInfo aSmlInfo,
                                                @Nonnull final TrustedCAChecker aAPCAChecker,
+                                               @Nonnull @Nonempty final String sDocTypeID,
+                                               @Nonnull @Nonempty final String sProcessID,
                                                @Nonnull final Phase4HREdeliverySendingReport aSendingReport)
   {
+    final IIdentifierFactory aIF = PeppolIdentifierFactory.INSTANCE;
     final String sMyPeppolSeatID = APConfig.getMyPeppolSeatID ();
     aSendingReport.setSenderPartyID (sMyPeppolSeatID);
 
@@ -283,6 +290,26 @@ public final class PeppolSender
     {
       // Start configuring here
       final IParticipantIdentifier aReceiverID = aData.getReceiverAsIdentifier ();
+
+      IDocumentTypeIdentifier aDocTypeID = aIF.parseDocumentTypeIdentifier (sDocTypeID);
+      if (aDocTypeID == null)
+      {
+        // Fallback to default scheme
+        aDocTypeID = aIF.createDocumentTypeIdentifierWithDefaultScheme (sDocTypeID);
+      }
+      if (aDocTypeID == null)
+        throw new IllegalStateException ("Failed to parse the document type ID '" + sDocTypeID + "'");
+      aSendingReport.setDocTypeID (aDocTypeID);
+
+      IProcessIdentifier aProcessID = aIF.parseProcessIdentifier (sProcessID);
+      if (aProcessID == null)
+      {
+        // Fallback to default scheme
+        aProcessID = aIF.createProcessIdentifierWithDefaultScheme (sProcessID);
+      }
+      if (aProcessID == null)
+        throw new IllegalStateException ("Failed to parse the process ID '" + sProcessID + "'");
+      aSendingReport.setProcessID (aProcessID);
 
       final BDXRClientReadOnly aSMPClient = new BDXRClientReadOnly (Phase4HREdeliverySender.URL_PROVIDER,
                                                                     aReceiverID,

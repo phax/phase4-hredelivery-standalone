@@ -64,23 +64,6 @@ public final class APConfig
     return getConfig ().getAsString ("phase4.api.requiredtoken");
   }
 
-  @Nullable
-  public static String getMyPeppolCountryCode ()
-  {
-    return getConfig ().getAsString ("peppol.owner.countrycode");
-  }
-
-  @Nullable
-  public static String getMyPeppolReportingSenderID ()
-  {
-    return getConfig ().getAsString ("peppol.reporting.senderid");
-  }
-
-  public static boolean isSchedulePeppolReporting ()
-  {
-    return getConfig ().getAsBoolean ("peppol.reporting.scheduled", true);
-  }
-
   public static boolean isSendingEnabled ()
   {
     return getConfig ().getAsBoolean ("peppol.sending.enabled", true);
