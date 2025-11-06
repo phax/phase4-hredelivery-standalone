@@ -21,7 +21,7 @@ Based on the Servlet technology, the application takes AS4 messages via HTTP POS
 
 By default, all valid incoming messages are handled by class `com.helger.phase4.peppolstandalone.spi.CustomPeppolIncomingSBDHandlerSPI`.
 This class contains a `TODO` where you need to implement the stuff you want to do with incoming messages.
-It also contains a lot of boilerplate code to show how certain things can be achieved (e.g. intergration with `peppol-reporting`).
+It also contains a lot of boilerplate code to show how certain things can be achieved .
 
 ## Functionality Sending
 
@@ -40,7 +40,7 @@ To send to an AS4 endpoint use this URL (the SBDH is built inside):
 
 To send to an AS4 endpoint use this URL when the SBDH is already available (especially for Peppol Testbed):
 ```
-/sendsbdh
+/sendsbdh/{docTypeId}/{processId}
 ```
 
 In both cases, the payload to send must be the XML business document (like the UBL Invoice).
@@ -51,25 +51,6 @@ Test call using the file `src\test\resources\external\example-invoice.xml` as th
 
 **Note:** Documents are NOT validated internally. They need to be validated externally. See https://github.com/phax/phive and https://github.com/phax/phive-rules for this.
 
-## Peppol Reporting
-
-Was added on 2025-02-16 as an example. On 2025-04-12 extended with the `do-peppol-reporting` API and the automatic scheduling.
-
-By default every 2nd of the month, at 5:00am the scheduled job to create, validate, store and send the Peppol Reports is executed. The 2nd was chosen to definitively not run in timezone issues. 
-
-Via `GET` on `/create-tsr/{year}/{month}` a Peppol Reporting Transaction Statistics Report (TSR) will be created. This does not validate or send the report.
-The `year` parameter must be &ge; 2024 and the `month` parameter must be between `1` and `12`.
-The response is a TSR XML in UTF-8 encoding. 
-
-Via `GET` on `/create-eusr/{year}/{month}` a Peppol Reporting End User Statistics Report (EUSR) will be created. This does not validate or send the report.
-The `year` parameter must be &ge; 2024 and the `month` parameter must be between `1` and `12`.
-The response is an EUSR XML in UTF-8 encoding. 
-
-Via `GET` on `/do-peppol-reporting/{year}/{month}` it will create TSR and EUSR reports, validate them, store them, send them to OpenPeppol and stores the sending reports of those.
-The `year` parameter must be &ge; 2024 and the `month` parameter must be between `1` and `12`.
-The response is a constant text showing that it was done.
-
-
 ## What is not included
 
 The following list contains the elements not considered for this demo application:
@@ -77,10 +58,6 @@ The following list contains the elements not considered for this demo applicatio
 * You need your own Peppol certificate to make it work - the contained keystore is a dummy one only
 * Document validation is not included
     * See https://github.com/phax/phive and https://github.com/phax/phive-rules for this.
-* Peppol Reporting is included, but disabled by default, as no reporting backend is present.
-    * You need to pick a backend (like MySQL or PostgreSQL) from https://github.com/phax/peppol-reporting and add to your `pom.xml`
-    * The calls for storing Peppol Reporting information is part of the code, but disabled by default, as relevant parameters cannot be determined automatically
-    * The default storage of created Peppol Reports is the file system - you should choose something else here as well (SQL, MongoDB etc.)
 
 # Get it up and running
 
@@ -105,8 +82,6 @@ mvn clean install
 
 The resulting Spring Boot application is afterwards available as `target/phase4-peppol-standalone-x.y.z.jar` (`x.y.z` is the version number).
 
-An example Docker file is also present - see `docker-build.cmd` and `docker-run.cmd` for details.
-
 ## Configuration
 
 The main configuration is done via the file `src/main/resources/application.properties`.
@@ -118,15 +93,6 @@ The following configuration properties are contained by default:
    the SML to be used and the CAs against which checks are performed
 * **`peppol.seatid`** - defines your Peppol Seat ID. It could be taken from your AP certificate as well,
    but this way it is a bit easier.
-* **`peppol.owner.countrycode`** - defines the country code of you as a Peppol Service Provider. Use the
-   2-letter country code (as in `AT` for Austria). This is required to send the Peppol Reports to
-   OpenPeppol.
-* **`peppol.reporting.senderid`** - the sending Peppol Participant ID. For now, this can be e.g. the VAT
-   number or organisational number of you as a Service Provider. In **the future** this will most likely need
-   to be an SPID (using the `0242` participant scheme ID). Example value: `9915:TestReportSender`. This will be used
-   as the sending Participant ID for sending Peppol Reports to OpenPeppol.
-* **`peppol.reporting.scheduled`** - a boolean value to indicate, if the Peppol TSR and EUSR reports should
-   automatically sent be towards OpenPeppol on a monthly basis. The cron rule is place is `0 0 5 2 * *`.
 
 ## Running
 
