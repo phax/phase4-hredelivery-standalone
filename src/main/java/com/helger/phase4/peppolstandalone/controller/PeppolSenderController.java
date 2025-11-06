@@ -26,15 +26,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.helger.base.io.nonblocking.NonBlockingByteArrayInputStream;
 import com.helger.base.string.StringHelper;
-import com.helger.peppol.sbdh.PeppolSBDHData;
+import com.helger.hredelivery.commons.sbdh.HREDeliverySBDHData;
+import com.helger.hredelivery.commons.sbdh.HREDeliverySBDHDataReader;
 import com.helger.peppol.sbdh.PeppolSBDHDataReadException;
-import com.helger.peppol.sbdh.PeppolSBDHDataReader;
 import com.helger.peppol.security.PeppolTrustedCA;
 import com.helger.peppol.servicedomain.EPeppolNetwork;
 import com.helger.peppol.sml.ESML;
 import com.helger.peppolid.factory.PeppolIdentifierFactory;
+import com.helger.phase4.hredelivery.Phase4HREdeliverySendingReport;
 import com.helger.phase4.logging.Phase4LoggerFactory;
-import com.helger.phase4.peppol.Phase4PeppolSendingReport;
 import com.helger.phase4.peppolstandalone.APConfig;
 import com.helger.security.certificate.TrustedCAChecker;
 
@@ -49,15 +49,14 @@ public class PeppolSenderController
   static final String HEADER_X_TOKEN = "X-Token";
   private static final Logger LOGGER = Phase4LoggerFactory.getLogger (PeppolSenderController.class);
 
-  @PostMapping (path = "/sendas4/{senderId}/{receiverId}/{docTypeId}/{processId}/{countryC1}",
+  @PostMapping (path = "/sendas4/{senderId}/{receiverId}/{docTypeId}/{processId}",
                 produces = MediaType.APPLICATION_JSON_VALUE)
   public String sendPeppolMessage (@RequestHeader (name = HEADER_X_TOKEN, required = true) final String xtoken,
                                    @RequestBody final byte [] aPayloadBytes,
                                    @PathVariable final String senderId,
                                    @PathVariable final String receiverId,
                                    @PathVariable final String docTypeId,
-                                   @PathVariable final String processId,
-                                   @PathVariable final String countryC1)
+                                   @PathVariable final String processId)
   {
     if (!APConfig.isSendingEnabled ())
     {
@@ -90,17 +89,14 @@ public class PeppolSenderController
                  docTypeId +
                  "' and '" +
                  processId +
-                 "' for '" +
-                 countryC1 +
                  "'");
-    final Phase4PeppolSendingReport aSendingReport = PeppolSender.sendPeppolMessageCreatingSbdh (eSML,
-                                                                                                 aAPCA,
-                                                                                                 aPayloadBytes,
-                                                                                                 senderId,
-                                                                                                 receiverId,
-                                                                                                 docTypeId,
-                                                                                                 processId,
-                                                                                                 countryC1);
+    final Phase4HREdeliverySendingReport aSendingReport = PeppolSender.sendPeppolMessageCreatingSbdh (eSML,
+                                                                                                      aAPCA,
+                                                                                                      aPayloadBytes,
+                                                                                                      senderId,
+                                                                                                      receiverId,
+                                                                                                      docTypeId,
+                                                                                                      processId);
 
     // Return as JSON
     return aSendingReport.getAsJsonString ();
@@ -131,12 +127,12 @@ public class PeppolSenderController
     final ESML eSML = eStage.isProduction () ? ESML.DIGIT_PRODUCTION : ESML.DIGIT_TEST;
     final TrustedCAChecker aAPCA = eStage.isProduction () ? PeppolTrustedCA.peppolProductionAP ()
                                                           : PeppolTrustedCA.peppolTestAP ();
-    final Phase4PeppolSendingReport aSendingReport = new Phase4PeppolSendingReport (eSML);
+    final Phase4HREdeliverySendingReport aSendingReport = new Phase4HREdeliverySendingReport (eSML);
 
-    final PeppolSBDHData aData;
+    final HREDeliverySBDHData aData;
     try
     {
-      aData = new PeppolSBDHDataReader (PeppolIdentifierFactory.INSTANCE).extractData (new NonBlockingByteArrayInputStream (aPayloadBytes));
+      aData = new HREDeliverySBDHDataReader (PeppolIdentifierFactory.INSTANCE).extractData (new NonBlockingByteArrayInputStream (aPayloadBytes));
     }
     catch (final PeppolSBDHDataReadException ex)
     {
@@ -152,14 +148,12 @@ public class PeppolSenderController
     aSendingReport.setReceiverID (aData.getReceiverAsIdentifier ());
     aSendingReport.setDocTypeID (aData.getDocumentTypeAsIdentifier ());
     aSendingReport.setProcessID (aData.getProcessAsIdentifier ());
-    aSendingReport.setCountryC1 (aData.getCountryC1 ());
     aSendingReport.setSBDHInstanceIdentifier (aData.getInstanceIdentifier ());
 
     final String sSenderID = aData.getSenderAsIdentifier ().getURIEncoded ();
     final String sReceiverID = aData.getReceiverAsIdentifier ().getURIEncoded ();
     final String sDocTypeID = aData.getDocumentTypeAsIdentifier ().getURIEncoded ();
     final String sProcessID = aData.getProcessAsIdentifier ().getURIEncoded ();
-    final String sCountryCodeC1 = aData.getCountryC1 ();
     LOGGER.info ("Trying to send Peppol " +
                  eStage.name () +
                  " SBDH message from '" +
@@ -170,8 +164,6 @@ public class PeppolSenderController
                  sDocTypeID +
                  "' and '" +
                  sProcessID +
-                 "' for '" +
-                 sCountryCodeC1 +
                  "'");
 
     PeppolSender.sendPeppolMessagePredefinedSbdh (aData, eSML, aAPCA, aSendingReport);

@@ -1,6 +1,8 @@
-# Standalone Peppol phase4
+# Standalone HR eDelivery phase4
 
-This an example standalone implementation of [phase4](https://github.com/phax/phase4) for the Peppol Network.
+# UNDER DEVELOPMENT
+
+This an example standalone implementation of [phase4](https://github.com/phax/phase4) for the HR eDelivery Network.
 
 This is a template application and NOT ready for production use, because you need to take decisions and add some code.
 Of course phase4 itself is ready for production use - see a list of [known phase4 users](https://github.com/phax/phase4/wiki/Known-Users) that have agreed to be publicly listed.
@@ -9,7 +11,7 @@ Of course phase4 itself is ready for production use - see a list of [known phase
 
 Contact me via email for *commercial support* (see `pom.xml` for the address).
 
-This project is part of my Peppol solution stack. See https://github.com/phax/peppol for other components and libraries in that area.
+**TODO** The rest of the file needs cleansing
 
 # Functionality
 
@@ -33,7 +35,7 @@ The actual Peppol Network choice (test or production network) is done based on t
 
 To send to an AS4 endpoint use this URL (the SBDH is built inside):
 ```
-/sendas4/{senderId}/{receiverId}/{docTypeId}/{processId}/{countryC1}
+/sendas4/{senderId}/{receiverId}/{docTypeId}/{processId}
 ```
 
 To send to an AS4 endpoint use this URL when the SBDH is already available (especially for Peppol Testbed):

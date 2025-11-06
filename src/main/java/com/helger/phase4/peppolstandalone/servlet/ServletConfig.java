@@ -19,14 +19,12 @@ package com.helger.phase4.peppolstandalone.servlet;
 import java.io.File;
 import java.security.KeyStore;
 import java.security.cert.X509Certificate;
-import java.time.YearMonth;
 
 import org.slf4j.Logger;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.Scheduled;
 
 import com.helger.base.debug.GlobalDebug;
 import com.helger.base.exception.InitializationException;
@@ -35,8 +33,6 @@ import com.helger.base.string.StringHelper;
 import com.helger.base.url.URLHelper;
 import com.helger.httpclient.HttpDebugger;
 import com.helger.mime.CMimeType;
-import com.helger.peppol.reporting.api.backend.IPeppolReportingBackendSPI;
-import com.helger.peppol.reporting.api.backend.PeppolReportingBackend;
 import com.helger.peppol.security.PeppolTrustedCA;
 import com.helger.peppol.servicedomain.EPeppolNetwork;
 import com.helger.phase4.config.AS4Configuration;
@@ -52,7 +48,6 @@ import com.helger.phase4.logging.Phase4LoggerFactory;
 import com.helger.phase4.mgr.MetaAS4Manager;
 import com.helger.phase4.peppol.servlet.Phase4PeppolDefaultReceiverConfiguration;
 import com.helger.phase4.peppolstandalone.APConfig;
-import com.helger.phase4.peppolstandalone.reporting.AppReportingHelper;
 import com.helger.phase4.profile.peppol.AS4PeppolProfileRegistarSPI;
 import com.helger.phase4.profile.peppol.PeppolCRLDownloader;
 import com.helger.phase4.profile.peppol.Phase4PeppolHttpClientSettings;
@@ -128,8 +123,8 @@ public class ServletConfig
     HttpDebugger.setEnabled (false);
 
     // Sanity check
-    if (CommandMap.getDefaultCommandMap ().createDataContentHandler (CMimeType.MULTIPART_RELATED.getAsString ()) ==
-        null)
+    if (CommandMap.getDefaultCommandMap ()
+                  .createDataContentHandler (CMimeType.MULTIPART_RELATED.getAsString ()) == null)
     {
       throw new IllegalStateException ("No DataContentHandler for MIME Type '" +
                                        CMimeType.MULTIPART_RELATED.getAsString () +
@@ -242,25 +237,6 @@ public class ServletConfig
       Phase4PeppolDefaultReceiverConfiguration.setReceiverCheckEnabled (false);
       LOGGER.warn ("phase4 Peppol receiver checks are disabled");
     }
-
-    // Initialize the Reporting Backend only once
-    if (PeppolReportingBackend.getBackendService ().initBackend (APConfig.getConfig ()).isFailure ())
-      throw new InitializationException ("Failed to init Peppol Reporting Backend Service");
-  }
-
-  // At 05:00 AM, on day 2 of the month
-  @Scheduled (cron = "0 0 5 2 * *")
-  public void sendPeppolReportingMessages ()
-  {
-    if (APConfig.isSchedulePeppolReporting ())
-    {
-      LOGGER.info ("Running scheduled creation and sending of Peppol Reporting messages");
-      // Use the previous month
-      final YearMonth aYearMonth = YearMonth.now ().minusMonths (1);
-      AppReportingHelper.createAndSendPeppolReports (aYearMonth);
-    }
-    else
-      LOGGER.warn ("Creating and sending Peppol Reports is disabled in the configuration");
   }
 
   /**
@@ -275,11 +251,6 @@ public class ServletConfig
     {
       if (WebScopeManager.isGlobalScopePresent ())
       {
-        // Shutdown the Peppol Reporting Backend service, if it was initialized
-        final IPeppolReportingBackendSPI aPRBS = PeppolReportingBackend.getBackendService ();
-        if (aPRBS != null && aPRBS.isInitialized ())
-          aPRBS.shutdownBackend ();
-
         AS4ServerInitializer.shutdownAS4Server ();
         WebFileIO.resetPaths ();
         WebScopeManager.onGlobalEnd ();
