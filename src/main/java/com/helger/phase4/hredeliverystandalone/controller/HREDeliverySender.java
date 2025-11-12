@@ -16,6 +16,8 @@
  */
 package com.helger.phase4.hredeliverystandalone.controller;
 
+import java.security.GeneralSecurityException;
+
 import org.slf4j.Logger;
 import org.w3c.dom.Document;
 
@@ -25,12 +27,14 @@ import com.helger.base.timing.StopWatch;
 import com.helger.base.wrapper.Wrapper;
 import com.helger.hredelivery.commons.sbdh.HREDeliverySBDHData;
 import com.helger.peppol.sml.ISMLInfo;
+import com.helger.peppol.smp.ESMPTransportProfile;
 import com.helger.peppolid.IDocumentTypeIdentifier;
 import com.helger.peppolid.IParticipantIdentifier;
 import com.helger.peppolid.IProcessIdentifier;
 import com.helger.peppolid.factory.IIdentifierFactory;
 import com.helger.peppolid.factory.PeppolIdentifierFactory;
 import com.helger.phase4.client.IAS4ClientBuildMessageCallback;
+import com.helger.phase4.dynamicdiscovery.AS4EndpointDetailProviderBDXR;
 import com.helger.phase4.hredelivery.Phase4HREdeliverySender;
 import com.helger.phase4.hredelivery.Phase4HREdeliverySender.HREDeliveryUserMessageBuilder;
 import com.helger.phase4.hredelivery.Phase4HREdeliverySender.HREDeliveryUserMessageSBDHBuilder;
@@ -154,6 +158,14 @@ public final class HREDeliverySender
                                                                     aSmlInfo);
 
       aSMPClient.withHttpClientSettings (aHCS -> {
+        try
+        {
+          aHCS.setSSLContextTrustAll ();
+        }
+        catch (GeneralSecurityException ex)
+        {
+          LOGGER.error ("Error", ex);
+        }
         // TODO Add SMP HTTP outbound proxy settings here
         // If this block is not used, it may be removed
       });
@@ -170,7 +182,7 @@ public final class HREDeliverySender
                                                                             .senderPartyID (sMyAPOIB)
                                                                             .payload (aDoc.getDocumentElement ())
                                                                             .apCAChecker (aAPCAChecker)
-                                                                            .smpClient (aSMPClient)
+                                                                            .endpointDetailProvider (new AS4EndpointDetailProviderBDXR (aSMPClient).setTransportProfile (ESMPTransportProfile.TRANSPORT_PROFILE_ERACUN_AS4_V1))
                                                                             .sbdDocumentConsumer (sbd -> {
                                                                               // Remember SBDH
                                                                               // Instance
@@ -307,6 +319,15 @@ public final class HREDeliverySender
                                                                     aSmlInfo);
 
       aSMPClient.withHttpClientSettings (aHCS -> {
+        try
+        {
+          aHCS.setSSLContextTrustAll ();
+        }
+        catch (GeneralSecurityException ex)
+        {
+          LOGGER.error ("Error", ex);
+        }
+
         // TODO Add SMP HTTP outbound proxy settings here
         // If this block is not used, it may be removed
       });
@@ -319,7 +340,7 @@ public final class HREDeliverySender
                                                                                 .payloadAndMetadata (aData)
                                                                                 .senderPartyID (sMyAPOIB)
                                                                                 .apCAChecker (aAPCAChecker)
-                                                                                .smpClient (aSMPClient)
+                                                                                .endpointDetailProvider (new AS4EndpointDetailProviderBDXR (aSMPClient).setTransportProfile (ESMPTransportProfile.TRANSPORT_PROFILE_ERACUN_AS4_V1))
                                                                                 .endpointURLConsumer (aSendingReport::setC3EndpointURL)
                                                                                 .technicalContactConsumer (aSendingReport::setC3TechnicalContact)
                                                                                 .certificateConsumer ( (aAPCertificate,
