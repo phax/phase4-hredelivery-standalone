@@ -39,7 +39,7 @@ public final class APConfig
   @Nonnull
   public static EPeppolNetwork getPeppolStage ()
   {
-    final String sStageID = getConfig ().getAsString ("peppol.stage");
+    final String sStageID = getConfig ().getAsString ("hredelivery.stage");
     final EPeppolNetwork ret = EPeppolNetwork.getFromIDOrNull (sStageID);
     if (ret == null)
       throw new IllegalStateException ("Failed to determine peppol stage from value '" + sStageID + "'");
