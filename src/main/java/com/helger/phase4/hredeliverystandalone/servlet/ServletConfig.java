@@ -42,15 +42,15 @@ import com.helger.phase4.crypto.IAS4CryptoFactory;
 import com.helger.phase4.dump.AS4DumpManager;
 import com.helger.phase4.dump.AS4IncomingDumperFileBased;
 import com.helger.phase4.dump.AS4OutgoingDumperFileBased;
+import com.helger.phase4.hredelivery.servlet.Phase4HREDeliveryDefaultReceiverConfiguration;
 import com.helger.phase4.hredeliverystandalone.APConfig;
 import com.helger.phase4.incoming.AS4ServerInitializer;
 import com.helger.phase4.incoming.mgr.AS4ProfileSelector;
 import com.helger.phase4.logging.Phase4LoggerFactory;
 import com.helger.phase4.mgr.MetaAS4Manager;
-import com.helger.phase4.peppol.servlet.Phase4PeppolDefaultReceiverConfiguration;
+import com.helger.phase4.profile.hredelivery.AS4HREDeliveryProfileRegistarSPI;
+import com.helger.phase4.profile.hredelivery.HREDeliveryCRLDownloader;
 import com.helger.phase4.profile.hredelivery.Phase4HREDeliveryHttpClientSettings;
-import com.helger.phase4.profile.peppol.AS4PeppolProfileRegistarSPI;
-import com.helger.phase4.profile.peppol.PeppolCRLDownloader;
 import com.helger.photon.io.WebFileIO;
 import com.helger.security.certificate.ECertificateCheckResult;
 import com.helger.security.certificate.TrustedCAChecker;
@@ -104,7 +104,7 @@ public class ServletConfig
       WebScopeManager.onGlobalBegin (aSC);
       _initGlobalSettings (aSC);
       _initAS4 ();
-      _initPeppolAS4 ();
+      _initHREDeliveryAS4 ();
     }
   }
 
@@ -150,7 +150,7 @@ public class ServletConfig
     // Enforce Peppol profile usage
     // This is the programmatic way to enforce exactly this one profile
     // In a multi-profile environment, that will not work
-    AS4ProfileSelector.setCustomDefaultAS4ProfileID (AS4PeppolProfileRegistarSPI.AS4_PROFILE_ID);
+    AS4ProfileSelector.setCustomDefaultAS4ProfileID (AS4HREDeliveryProfileRegistarSPI.AS4_PROFILE_ID);
 
     AS4ServerInitializer.initAS4Server ();
 
@@ -159,7 +159,7 @@ public class ServletConfig
     AS4DumpManager.setOutgoingDumper (new AS4OutgoingDumperFileBased ());
   }
 
-  private static void _initPeppolAS4 ()
+  private static void _initHREDeliveryAS4 ()
   {
     // Make sure the download of CRL is using Apache HttpClient and that the
     // provided settings are used. If e.g. a proxy is needed to access outbound
@@ -167,7 +167,7 @@ public class ServletConfig
     {
       final Phase4HREDeliveryHttpClientSettings aHCS = new Phase4HREDeliveryHttpClientSettings ();
       // TODO eventually configure an outbound HTTP proxy here as well
-      PeppolCRLDownloader.setAsDefaultCRLCache (aHCS);
+      HREDeliveryCRLDownloader.setAsDefaultCRLCache (aHCS);
     }
 
     // Throws an exception if configuration parameters are missing
@@ -217,7 +217,7 @@ public class ServletConfig
       LOGGER.info ("Successfully checked that the provided HR eDelivery certificate is valid.");
 
     // Must be set independent on the enabled/disable status
-    Phase4PeppolDefaultReceiverConfiguration.setAPCAChecker (aAPCAChecker);
+    Phase4HREDeliveryDefaultReceiverConfiguration.setAPCAChecker (aAPCAChecker);
 
     // Eventually enable the receiver check, so that for each incoming request
     // the validity is crosscheck against the owning SMP
@@ -227,15 +227,15 @@ public class ServletConfig
     {
       // To process the message even though the receiver is not registered in
       // our AP
-      Phase4PeppolDefaultReceiverConfiguration.setReceiverCheckEnabled (true);
-      Phase4PeppolDefaultReceiverConfiguration.setSMPClient (new SMPClientReadOnly (URLHelper.getAsURI (sSMPURL)));
-      Phase4PeppolDefaultReceiverConfiguration.setAS4EndpointURL (sAPURL);
-      Phase4PeppolDefaultReceiverConfiguration.setAPCertificate (aAPCert);
+      Phase4HREDeliveryDefaultReceiverConfiguration.setReceiverCheckEnabled (true);
+      Phase4HREDeliveryDefaultReceiverConfiguration.setSMPClient (new SMPClientReadOnly (URLHelper.getAsURI (sSMPURL)));
+      Phase4HREDeliveryDefaultReceiverConfiguration.setAS4EndpointURL (sAPURL);
+      Phase4HREDeliveryDefaultReceiverConfiguration.setAPCertificate (aAPCert);
       LOGGER.info ("phase4 HR eDelivery receiver checks are enabled");
     }
     else
     {
-      Phase4PeppolDefaultReceiverConfiguration.setReceiverCheckEnabled (false);
+      Phase4HREDeliveryDefaultReceiverConfiguration.setReceiverCheckEnabled (false);
       LOGGER.warn ("phase4 HR eDelivery receiver checks are disabled");
     }
   }

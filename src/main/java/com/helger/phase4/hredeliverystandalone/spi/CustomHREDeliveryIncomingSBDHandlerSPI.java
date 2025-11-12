@@ -21,15 +21,17 @@ import org.unece.cefact.namespaces.sbdh.StandardBusinessDocument;
 
 import com.helger.annotation.style.IsSPIImplementation;
 import com.helger.collection.commons.ICommonsList;
+import com.helger.hredelivery.commons.sbdh.HREDeliverySBDHData;
 import com.helger.http.header.HttpHeaderMap;
-import com.helger.peppol.sbdh.PeppolSBDHData;
+import com.helger.peppolid.IDocumentTypeIdentifier;
+import com.helger.peppolid.IProcessIdentifier;
 import com.helger.phase4.ebms3header.Ebms3Error;
 import com.helger.phase4.ebms3header.Ebms3UserMessage;
+import com.helger.phase4.hredelivery.servlet.IPhase4HREDeliveryIncomingSBDHandlerSPI;
 import com.helger.phase4.hredeliverystandalone.APConfig;
 import com.helger.phase4.incoming.IAS4IncomingMessageMetadata;
 import com.helger.phase4.incoming.IAS4IncomingMessageState;
 import com.helger.phase4.logging.Phase4LoggerFactory;
-import com.helger.phase4.peppol.servlet.IPhase4PeppolIncomingSBDHandlerSPI;
 import com.helger.phase4.util.Phase4Exception;
 import com.helger.security.certificate.CertificateHelper;
 
@@ -41,7 +43,7 @@ import jakarta.annotation.Nonnull;
  * @author Philip Helger
  */
 @IsSPIImplementation
-public class CustomHREDeliveryIncomingSBDHandlerSPI implements IPhase4PeppolIncomingSBDHandlerSPI
+public class CustomHREDeliveryIncomingSBDHandlerSPI implements IPhase4HREDeliveryIncomingSBDHandlerSPI
 {
   private static final Logger LOGGER = Phase4LoggerFactory.getLogger (CustomHREDeliveryIncomingSBDHandlerSPI.class);
 
@@ -50,7 +52,9 @@ public class CustomHREDeliveryIncomingSBDHandlerSPI implements IPhase4PeppolInco
                                  @Nonnull final Ebms3UserMessage aUserMessage,
                                  @Nonnull final byte [] aSBDBytes,
                                  @Nonnull final StandardBusinessDocument aSBD,
-                                 @Nonnull final PeppolSBDHData aPeppolSBD,
+                                 @Nonnull final HREDeliverySBDHData aPeppolSBD,
+                                 @Nonnull final IDocumentTypeIdentifier aDocTypeID,
+                                 @Nonnull final IProcessIdentifier aProcessID,
                                  @Nonnull final IAS4IncomingMessageState aIncomingState,
                                  @Nonnull final ICommonsList <Ebms3Error> aProcessingErrorMessages) throws Exception
   {
@@ -68,8 +72,8 @@ public class CustomHREDeliveryIncomingSBDHandlerSPI implements IPhase4PeppolInco
     LOGGER.info ("  C2 = " + CertificateHelper.getSubjectCN (aIncomingState.getSigningCertificate ()));
     LOGGER.info ("  C3 = " + sMyPartyID);
     LOGGER.info ("  C4 = " + aPeppolSBD.getReceiverAsIdentifier ().getURIEncoded ());
-    LOGGER.info ("  DocType = " + aPeppolSBD.getDocumentTypeAsIdentifier ().getURIEncoded ());
-    LOGGER.info ("  Process = " + aPeppolSBD.getProcessAsIdentifier ().getURIEncoded ());
+    LOGGER.info ("  DocType = " + aDocTypeID.getURIEncoded ());
+    LOGGER.info ("  Process = " + aProcessID.getURIEncoded ());
 
     // TODO add your code here
     // E.g. write to disk, write to S3, write to database, write to queue...

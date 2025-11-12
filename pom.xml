@@ -135,7 +135,7 @@
     </dependency>
     <dependency>
       <groupId>com.helger.phase4</groupId>
-      <artifactId>phase4-peppol-servlet</artifactId>
+      <artifactId>phase4-hredelivery-servlet</artifactId>
     </dependency>
     <dependency>
       <groupId>com.helger.phase4</groupId>
