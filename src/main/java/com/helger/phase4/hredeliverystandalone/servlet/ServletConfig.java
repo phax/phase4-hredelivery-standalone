@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023-2025 Philip Helger (www.helger.com)
+ * Copyright (C) 2025 Philip Helger (www.helger.com)
  * philip[at]helger[dot]com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,9 +31,9 @@ import com.helger.base.exception.InitializationException;
 import com.helger.base.state.ETriState;
 import com.helger.base.string.StringHelper;
 import com.helger.base.url.URLHelper;
+import com.helger.hredelivery.commons.security.HREDeliveryTrustedCA;
 import com.helger.httpclient.HttpDebugger;
 import com.helger.mime.CMimeType;
-import com.helger.peppol.security.PeppolTrustedCA;
 import com.helger.peppol.servicedomain.EPeppolNetwork;
 import com.helger.phase4.config.AS4Configuration;
 import com.helger.phase4.crypto.AS4CryptoFactoryConfiguration;
@@ -48,9 +48,9 @@ import com.helger.phase4.incoming.mgr.AS4ProfileSelector;
 import com.helger.phase4.logging.Phase4LoggerFactory;
 import com.helger.phase4.mgr.MetaAS4Manager;
 import com.helger.phase4.peppol.servlet.Phase4PeppolDefaultReceiverConfiguration;
+import com.helger.phase4.profile.hredelivery.Phase4HREDeliveryHttpClientSettings;
 import com.helger.phase4.profile.peppol.AS4PeppolProfileRegistarSPI;
 import com.helger.phase4.profile.peppol.PeppolCRLDownloader;
-import com.helger.phase4.profile.peppol.Phase4PeppolHttpClientSettings;
 import com.helger.photon.io.WebFileIO;
 import com.helger.security.certificate.ECertificateCheckResult;
 import com.helger.security.certificate.TrustedCAChecker;
@@ -165,7 +165,7 @@ public class ServletConfig
     // provided settings are used. If e.g. a proxy is needed to access outbound
     // resources, it can be configured here
     {
-      final Phase4PeppolHttpClientSettings aHCS = new Phase4PeppolHttpClientSettings ();
+      final Phase4HREDeliveryHttpClientSettings aHCS = new Phase4HREDeliveryHttpClientSettings ();
       // TODO eventually configure an outbound HTTP proxy here as well
       PeppolCRLDownloader.setAsDefaultCRLCache (aHCS);
     }
@@ -189,8 +189,8 @@ public class ServletConfig
 
     final X509Certificate aAPCert = (X509Certificate) aPKE.getCertificate ();
 
-    final TrustedCAChecker aAPCAChecker = eStage.isProduction () ? PeppolTrustedCA.peppolProductionAP ()
-                                                                 : PeppolTrustedCA.peppolTestAP ();
+    final TrustedCAChecker aAPCAChecker = eStage.isProduction () ? HREDeliveryTrustedCA.hrEdeliveryFinaProduction ()
+                                                                 : HREDeliveryTrustedCA.hrEdeliveryFinaDemo ();
 
     // Check the configured Peppol AP certificate
     // * No caching
@@ -205,15 +205,16 @@ public class ServletConfig
       // TODO Change from "true" to "false" once you have a Peppol
       // certificate so that an exception is thrown
       if (true)
-        LOGGER.error ("The provided certificate is not a valid Peppol certificate. Check result: " + eCheckResult);
+        LOGGER.error ("The provided certificate is not a valid HR eDelivery certificate. Check result: " +
+                      eCheckResult);
       else
       {
-        throw new InitializationException ("The provided certificate is not a Peppol certificate. Check result: " +
+        throw new InitializationException ("The provided certificate is not a HR eDelivery certificate. Check result: " +
                                            eCheckResult);
       }
     }
     else
-      LOGGER.info ("Successfully checked that the provided Peppol AP certificate is valid.");
+      LOGGER.info ("Successfully checked that the provided HR eDelivery certificate is valid.");
 
     // Must be set independent on the enabled/disable status
     Phase4PeppolDefaultReceiverConfiguration.setAPCAChecker (aAPCAChecker);
