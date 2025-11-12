@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.helger.phase4.peppolstandalone.controller;
+package com.helger.phase4.hredeliverystandalone.controller;
 
 import org.slf4j.Logger;
 import org.springframework.http.MediaType;
@@ -26,16 +26,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.helger.base.io.nonblocking.NonBlockingByteArrayInputStream;
 import com.helger.base.string.StringHelper;
+import com.helger.hredelivery.commons.EHREDeliverySML;
 import com.helger.hredelivery.commons.sbdh.HREDeliverySBDHData;
 import com.helger.hredelivery.commons.sbdh.HREDeliverySBDHDataReadException;
 import com.helger.hredelivery.commons.sbdh.HREDeliverySBDHDataReader;
-import com.helger.peppol.security.PeppolTrustedCA;
+import com.helger.hredelivery.commons.security.HREDeliveryTrustedCA;
 import com.helger.peppol.servicedomain.EPeppolNetwork;
-import com.helger.peppol.sml.ESML;
 import com.helger.peppolid.factory.PeppolIdentifierFactory;
 import com.helger.phase4.hredelivery.Phase4HREdeliverySendingReport;
+import com.helger.phase4.hredeliverystandalone.APConfig;
 import com.helger.phase4.logging.Phase4LoggerFactory;
-import com.helger.phase4.peppolstandalone.APConfig;
 import com.helger.security.certificate.TrustedCAChecker;
 
 /**
@@ -76,10 +76,10 @@ public class HREDeliverySenderController
     }
 
     final EPeppolNetwork eStage = APConfig.getPeppolStage ();
-    final ESML eSML = eStage.isProduction () ? ESML.DIGIT_PRODUCTION : ESML.DIGIT_TEST;
-    final TrustedCAChecker aAPCA = eStage.isProduction () ? PeppolTrustedCA.peppolProductionAP ()
-                                                          : PeppolTrustedCA.peppolTestAP ();
-    LOGGER.info ("Trying to send Peppol " +
+    final EHREDeliverySML eSML = eStage.isProduction () ? EHREDeliverySML.PRODUCTION : EHREDeliverySML.DEMO;
+    final TrustedCAChecker aAPCA = eStage.isProduction () ? HREDeliveryTrustedCA.hrEdeliveryFinaProduction ()
+                                                          : HREDeliveryTrustedCA.hrEdeliveryFinaDemo ();
+    LOGGER.info ("Trying to send HR eDelivery " +
                  eStage.name () +
                  " message from '" +
                  senderId +
@@ -90,13 +90,13 @@ public class HREDeliverySenderController
                  "' and '" +
                  processId +
                  "'");
-    final Phase4HREdeliverySendingReport aSendingReport = HREDeliverySender.sendPeppolMessageCreatingSbdh (eSML,
-                                                                                                           aAPCA,
-                                                                                                           aPayloadBytes,
-                                                                                                           senderId,
-                                                                                                           receiverId,
-                                                                                                           docTypeId,
-                                                                                                           processId);
+    final Phase4HREdeliverySendingReport aSendingReport = HREDeliverySender.sendHREDeliveryMessageCreatingSbdh (eSML,
+                                                                                                                aAPCA,
+                                                                                                                aPayloadBytes,
+                                                                                                                senderId,
+                                                                                                                receiverId,
+                                                                                                                docTypeId,
+                                                                                                                processId);
 
     // Return as JSON
     return aSendingReport.getAsJsonString ();
@@ -126,9 +126,9 @@ public class HREDeliverySenderController
     }
 
     final EPeppolNetwork eStage = APConfig.getPeppolStage ();
-    final ESML eSML = eStage.isProduction () ? ESML.DIGIT_PRODUCTION : ESML.DIGIT_TEST;
-    final TrustedCAChecker aAPCA = eStage.isProduction () ? PeppolTrustedCA.peppolProductionAP ()
-                                                          : PeppolTrustedCA.peppolTestAP ();
+    final EHREDeliverySML eSML = eStage.isProduction () ? EHREDeliverySML.PRODUCTION : EHREDeliverySML.DEMO;
+    final TrustedCAChecker aAPCA = eStage.isProduction () ? HREDeliveryTrustedCA.hrEdeliveryFinaProduction ()
+                                                          : HREDeliveryTrustedCA.hrEdeliveryFinaDemo ();
     final Phase4HREdeliverySendingReport aSendingReport = new Phase4HREdeliverySendingReport (eSML);
 
     final HREDeliverySBDHData aData;
@@ -152,7 +152,7 @@ public class HREDeliverySenderController
 
     final String sSenderID = aData.getSenderAsIdentifier ().getURIEncoded ();
     final String sReceiverID = aData.getReceiverAsIdentifier ().getURIEncoded ();
-    LOGGER.info ("Trying to send Peppol " +
+    LOGGER.info ("Trying to send HR eDelivery " +
                  eStage.name () +
                  " SBDH message from '" +
                  sSenderID +
@@ -164,7 +164,7 @@ public class HREDeliverySenderController
                  processId +
                  "'");
 
-    HREDeliverySender.sendPeppolMessagePredefinedSbdh (aData, eSML, aAPCA, docTypeId, processId, aSendingReport);
+    HREDeliverySender.sendHREDeliveryMessagePredefinedSbdh (aData, eSML, aAPCA, docTypeId, processId, aSendingReport);
 
     // Return result JSON
     return aSendingReport.getAsJsonString ();

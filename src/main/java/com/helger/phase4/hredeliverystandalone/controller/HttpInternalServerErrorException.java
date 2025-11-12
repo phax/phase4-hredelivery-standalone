@@ -14,22 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.helger.phase4.peppolstandalone;
+package com.helger.phase4.hredeliverystandalone.controller;
 
-import org.junit.jupiter.api.Test;
-
-import com.helger.unittestext.SPITestHelper;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * Test SPI definitions
+ * REST Controller exception mapping to HTTP 500 (Internal Server Error)
  *
  * @author Philip Helger
  */
-public final class SPITest
+@ResponseStatus (HttpStatus.INTERNAL_SERVER_ERROR)
+public class HttpInternalServerErrorException extends RuntimeException
 {
-  @Test
-  public void testBasic () throws Exception
+  public HttpInternalServerErrorException (final String sMsg)
   {
-    SPITestHelper.testIfAllSPIImplementationsAreValid ();
+    super (sMsg);
   }
 }

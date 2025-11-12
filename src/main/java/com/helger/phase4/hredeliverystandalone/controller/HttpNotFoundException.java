@@ -14,21 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.helger.phase4.peppolstandalone;
+package com.helger.phase4.hredeliverystandalone.controller;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * This is the application entrypoint.
+ * REST Controller exception mapping to HTTP 404 (Not Found)
  *
  * @author Philip Helger
  */
-@SpringBootApplication
-public class Phase4PeppolStandaloneApplication
+@ResponseStatus (HttpStatus.NOT_FOUND)
+public class HttpNotFoundException extends RuntimeException
 {
-  public static void main (final String [] args)
+  public HttpNotFoundException ()
+  {}
+
+  public HttpNotFoundException (final String sMsg)
   {
-    SpringApplication.run (Phase4PeppolStandaloneApplication.class, args);
+    super (sMsg);
   }
 }

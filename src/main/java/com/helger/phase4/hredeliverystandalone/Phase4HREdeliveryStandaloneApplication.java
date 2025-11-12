@@ -14,24 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.helger.phase4.peppolstandalone.controller;
+package com.helger.phase4.hredeliverystandalone;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * REST Controller exception mapping to HTTP 403 (Forbidden)
+ * This is the application entrypoint.
  *
  * @author Philip Helger
  */
-@ResponseStatus (HttpStatus.FORBIDDEN)
-public class HttpForbiddenException extends RuntimeException
+@SpringBootApplication
+public class Phase4HREdeliveryStandaloneApplication
 {
-  public HttpForbiddenException ()
-  {}
-
-  public HttpForbiddenException (final String sMsg)
+  public static void main (final String [] args)
   {
-    super (sMsg);
+    SpringApplication.run (Phase4HREdeliveryStandaloneApplication.class, args);
   }
 }

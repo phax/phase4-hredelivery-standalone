@@ -14,23 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.helger.phase4.peppolstandalone.controller;
+package com.helger.phase4.hredeliverystandalone.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * REST Controller exception mapping to HTTP 404 (Not Found)
+ * REST Controller exception mapping to HTTP 403 (Forbidden)
  *
  * @author Philip Helger
  */
-@ResponseStatus (HttpStatus.NOT_FOUND)
-public class HttpNotFoundException extends RuntimeException
+@ResponseStatus (HttpStatus.FORBIDDEN)
+public class HttpForbiddenException extends RuntimeException
 {
-  public HttpNotFoundException ()
+  public HttpForbiddenException ()
   {}
 
-  public HttpNotFoundException (final String sMsg)
+  public HttpForbiddenException (final String sMsg)
   {
     super (sMsg);
   }

@@ -189,7 +189,7 @@
         </executions>
         <configuration>
           <mainClass>
-            com.helger.phase4.peppolstandalone.Phase4PeppolStandaloneApplication</mainClass>
+            com.helger.phase4.hredeliverystandalone.Phase4HREdeliveryStandaloneApplication</mainClass>
           <layout>ZIP</layout>
         </configuration>
       </plugin>

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.helger.phase4.peppolstandalone.spi;
+package com.helger.phase4.hredeliverystandalone.spi;
 
 import org.slf4j.Logger;
 import org.unece.cefact.namespaces.sbdh.StandardBusinessDocument;
@@ -32,12 +32,12 @@ import com.helger.peppol.sbdh.spec12.BinaryContentType;
 import com.helger.peppol.sbdh.spec12.ObjectFactory;
 import com.helger.phase4.ebms3header.Ebms3Error;
 import com.helger.phase4.ebms3header.Ebms3UserMessage;
+import com.helger.phase4.hredeliverystandalone.APConfig;
 import com.helger.phase4.incoming.IAS4IncomingMessageMetadata;
 import com.helger.phase4.incoming.IAS4IncomingMessageState;
 import com.helger.phase4.logging.Phase4LoggerFactory;
 import com.helger.phase4.peppol.servlet.IPhase4PeppolIncomingSBDHandlerSPI;
 import com.helger.phase4.peppol.servlet.Phase4PeppolServletMessageProcessorSPI;
-import com.helger.phase4.peppolstandalone.APConfig;
 import com.helger.phase4.util.Phase4Exception;
 import com.helger.security.certificate.CertificateHelper;
 

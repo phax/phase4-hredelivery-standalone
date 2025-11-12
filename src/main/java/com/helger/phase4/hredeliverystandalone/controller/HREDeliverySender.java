@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.helger.phase4.peppolstandalone.controller;
+package com.helger.phase4.hredeliverystandalone.controller;
 
 import org.slf4j.Logger;
 import org.w3c.dom.Document;
@@ -35,11 +35,11 @@ import com.helger.phase4.client.IAS4ClientBuildMessageCallback;
 import com.helger.phase4.hredelivery.Phase4HREdeliverySender;
 import com.helger.phase4.hredelivery.Phase4HREdeliverySender.HREDeliveryUserMessageBuilder;
 import com.helger.phase4.hredelivery.Phase4HREdeliverySender.HREDeliveryUserMessageSBDHBuilder;
+import com.helger.phase4.hredeliverystandalone.APConfig;
 import com.helger.phase4.hredelivery.Phase4HREdeliverySendingReport;
 import com.helger.phase4.logging.Phase4LoggerFactory;
 import com.helger.phase4.model.message.AS4UserMessage;
 import com.helger.phase4.model.message.AbstractAS4Message;
-import com.helger.phase4.peppolstandalone.APConfig;
 import com.helger.phase4.profile.peppol.Phase4PeppolHttpClientSettings;
 import com.helger.phase4.sender.EAS4UserMessageSendResult;
 import com.helger.phase4.util.Phase4Exception;
@@ -64,7 +64,7 @@ public final class HREDeliverySender
   {}
 
   /**
-   * Send a Peppol message where the SBDH is created internally by phase4
+   * Send a HR eDelivery message where the SBDH is created internally by phase4
    *
    * @param aSmlInfo
    *        The SML to be used for receiver lookup
@@ -83,13 +83,13 @@ public final class HREDeliverySender
    * @return The created sending report and never <code>null</code>.
    */
   @Nonnull
-  public static Phase4HREdeliverySendingReport sendPeppolMessageCreatingSbdh (@Nonnull final ISMLInfo aSmlInfo,
-                                                                              @Nonnull final TrustedCAChecker aAPCAChecker,
-                                                                              @Nonnull final byte [] aPayloadBytes,
-                                                                              @Nonnull @Nonempty final String sSenderID,
-                                                                              @Nonnull @Nonempty final String sReceiverID,
-                                                                              @Nonnull @Nonempty final String sDocTypeID,
-                                                                              @Nonnull @Nonempty final String sProcessID)
+  public static Phase4HREdeliverySendingReport sendHREDeliveryMessageCreatingSbdh (@Nonnull final ISMLInfo aSmlInfo,
+                                                                                   @Nonnull final TrustedCAChecker aAPCAChecker,
+                                                                                   @Nonnull final byte [] aPayloadBytes,
+                                                                                   @Nonnull @Nonempty final String sSenderID,
+                                                                                   @Nonnull @Nonempty final String sReceiverID,
+                                                                                   @Nonnull @Nonempty final String sDocTypeID,
+                                                                                   @Nonnull @Nonempty final String sProcessID)
   {
     final IIdentifierFactory aIF = PeppolIdentifierFactory.INSTANCE;
     final String sMyPeppolSeatID = APConfig.getMyPeppolSeatID ();
@@ -272,12 +272,12 @@ public final class HREDeliverySender
    * @param aSendingReport
    *        The sending report to be filled.
    */
-  static void sendPeppolMessagePredefinedSbdh (@Nonnull final HREDeliverySBDHData aData,
-                                               @Nonnull final ISMLInfo aSmlInfo,
-                                               @Nonnull final TrustedCAChecker aAPCAChecker,
-                                               @Nonnull @Nonempty final String sDocTypeID,
-                                               @Nonnull @Nonempty final String sProcessID,
-                                               @Nonnull final Phase4HREdeliverySendingReport aSendingReport)
+  static void sendHREDeliveryMessagePredefinedSbdh (@Nonnull final HREDeliverySBDHData aData,
+                                                    @Nonnull final ISMLInfo aSmlInfo,
+                                                    @Nonnull final TrustedCAChecker aAPCAChecker,
+                                                    @Nonnull @Nonempty final String sDocTypeID,
+                                                    @Nonnull @Nonempty final String sProcessID,
+                                                    @Nonnull final Phase4HREdeliverySendingReport aSendingReport)
   {
     final IIdentifierFactory aIF = PeppolIdentifierFactory.INSTANCE;
     final String sMyPeppolSeatID = APConfig.getMyPeppolSeatID ();
