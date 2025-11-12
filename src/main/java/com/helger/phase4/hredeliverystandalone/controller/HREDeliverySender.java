@@ -82,19 +82,19 @@ public final class HREDeliverySender
    * @return The created sending report and never <code>null</code>.
    */
   @Nonnull
-  public static Phase4HREdeliverySendingReport sendHREDeliveryMessageCreatingSbdh (@Nonnull final EHREDeliverySML aSmlInfo,
-                                                                                   @Nonnull final TrustedCAChecker aAPCAChecker,
-                                                                                   @Nonnull final byte [] aPayloadBytes,
-                                                                                   @Nonnull @Nonempty final String sSenderID,
-                                                                                   @Nonnull @Nonempty final String sReceiverID,
-                                                                                   @Nonnull @Nonempty final String sDocTypeID,
-                                                                                   @Nonnull @Nonempty final String sProcessID)
+  static Phase4HREdeliverySendingReport sendHREDeliveryMessageCreatingSbdh (@Nonnull final EHREDeliverySML aSmlInfo,
+                                                                            @Nonnull final TrustedCAChecker aAPCAChecker,
+                                                                            @Nonnull final byte [] aPayloadBytes,
+                                                                            @Nonnull @Nonempty final String sSenderID,
+                                                                            @Nonnull @Nonempty final String sReceiverID,
+                                                                            @Nonnull @Nonempty final String sDocTypeID,
+                                                                            @Nonnull @Nonempty final String sProcessID)
   {
     final IIdentifierFactory aIF = PeppolIdentifierFactory.INSTANCE;
-    final String sMyAPOIB = APConfig.getMyAccessPointOIB ();
+    final String sMyPartyID = APConfig.getMyPartyID ();
 
     final Phase4HREdeliverySendingReport aSendingReport = new Phase4HREdeliverySendingReport (aSmlInfo);
-    aSendingReport.setSenderPartyID (sMyAPOIB);
+    aSendingReport.setSenderPartyID (sMyPartyID);
 
     EAS4UserMessageSendResult eResult = null;
     boolean bExceptionCaught = false;
@@ -165,7 +165,7 @@ public final class HREDeliverySender
                                                                             .processID (aProcessID)
                                                                             .senderParticipantID (aSenderID)
                                                                             .receiverParticipantID (aReceiverID)
-                                                                            .senderPartyID (sMyAPOIB)
+                                                                            .senderPartyID (sMyPartyID)
                                                                             .payload (aDoc.getDocumentElement ())
                                                                             .apCAChecker (aAPCAChecker)
                                                                             .smpClient (aSMPClient)
@@ -269,8 +269,8 @@ public final class HREDeliverySender
                                                     @Nonnull final Phase4HREdeliverySendingReport aSendingReport)
   {
     final IIdentifierFactory aIF = PeppolIdentifierFactory.INSTANCE;
-    final String sMyAPOIB = APConfig.getMyAccessPointOIB ();
-    aSendingReport.setSenderPartyID (sMyAPOIB);
+    final String sMyPartyID = APConfig.getMyPartyID ();
+    aSendingReport.setSenderPartyID (sMyPartyID);
 
     EAS4UserMessageSendResult eResult = null;
     boolean bExceptionCaught = false;
@@ -313,7 +313,7 @@ public final class HREDeliverySender
       final HREDeliveryUserMessageSBDHBuilder aBuilder = Phase4HREdeliverySender.sbdhBuilder ()
                                                                                 .httpClientFactory (aHCS)
                                                                                 .payloadAndMetadata (aData)
-                                                                                .senderPartyID (sMyAPOIB)
+                                                                                .senderPartyID (sMyPartyID)
                                                                                 .apCAChecker (aAPCAChecker)
                                                                                 .smpClient (aSMPClient)
                                                                                 .endpointURLConsumer (aSendingReport::setC3EndpointURL)

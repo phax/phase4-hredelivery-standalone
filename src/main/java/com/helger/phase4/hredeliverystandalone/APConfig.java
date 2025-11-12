@@ -47,6 +47,12 @@ public final class APConfig
   }
 
   @Nullable
+  public static String getMyPartyID ()
+  {
+    return getConfig ().getAsString ("hredelivery.partyid");
+  }
+
+  @Nullable
   public static String getMyAccessPointOIB ()
   {
     return getConfig ().getAsString ("hredelivery.accesspointoib");
