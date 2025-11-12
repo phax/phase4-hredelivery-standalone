@@ -16,8 +16,6 @@
  */
 package com.helger.phase4.hredeliverystandalone.controller;
 
-import java.security.GeneralSecurityException;
-
 import org.slf4j.Logger;
 import org.w3c.dom.Document;
 
@@ -25,16 +23,15 @@ import com.helger.annotation.Nonempty;
 import com.helger.annotation.concurrent.Immutable;
 import com.helger.base.timing.StopWatch;
 import com.helger.base.wrapper.Wrapper;
+import com.helger.hredelivery.commons.EHREDeliverySML;
 import com.helger.hredelivery.commons.sbdh.HREDeliverySBDHData;
-import com.helger.peppol.sml.ISMLInfo;
-import com.helger.peppol.smp.ESMPTransportProfile;
+import com.helger.hredelivery.commons.smp.HRMPSClientReadOnly;
 import com.helger.peppolid.IDocumentTypeIdentifier;
 import com.helger.peppolid.IParticipantIdentifier;
 import com.helger.peppolid.IProcessIdentifier;
 import com.helger.peppolid.factory.IIdentifierFactory;
 import com.helger.peppolid.factory.PeppolIdentifierFactory;
 import com.helger.phase4.client.IAS4ClientBuildMessageCallback;
-import com.helger.phase4.dynamicdiscovery.AS4EndpointDetailProviderBDXR;
 import com.helger.phase4.hredelivery.Phase4HREdeliverySender;
 import com.helger.phase4.hredelivery.Phase4HREdeliverySender.HREDeliveryUserMessageBuilder;
 import com.helger.phase4.hredelivery.Phase4HREdeliverySender.HREDeliveryUserMessageSBDHBuilder;
@@ -47,7 +44,6 @@ import com.helger.phase4.profile.hredelivery.Phase4HREDeliveryHttpClientSettings
 import com.helger.phase4.sender.EAS4UserMessageSendResult;
 import com.helger.phase4.util.Phase4Exception;
 import com.helger.security.certificate.TrustedCAChecker;
-import com.helger.smpclient.bdxr1.BDXRClientReadOnly;
 import com.helger.xml.serialize.read.DOMReader;
 
 import jakarta.annotation.Nonnull;
@@ -86,7 +82,7 @@ public final class HREDeliverySender
    * @return The created sending report and never <code>null</code>.
    */
   @Nonnull
-  public static Phase4HREdeliverySendingReport sendHREDeliveryMessageCreatingSbdh (@Nonnull final ISMLInfo aSmlInfo,
+  public static Phase4HREdeliverySendingReport sendHREDeliveryMessageCreatingSbdh (@Nonnull final EHREDeliverySML aSmlInfo,
                                                                                    @Nonnull final TrustedCAChecker aAPCAChecker,
                                                                                    @Nonnull final byte [] aPayloadBytes,
                                                                                    @Nonnull @Nonempty final String sSenderID,
@@ -153,19 +149,9 @@ public final class HREDeliverySender
         throw new IllegalStateException ("Failed to parse the process ID '" + sProcessID + "'");
       aSendingReport.setProcessID (aProcessID);
 
-      final BDXRClientReadOnly aSMPClient = new BDXRClientReadOnly (Phase4HREdeliverySender.URL_PROVIDER,
-                                                                    aReceiverID,
-                                                                    aSmlInfo);
+      final HRMPSClientReadOnly aSMPClient = new HRMPSClientReadOnly (aReceiverID, aSmlInfo);
 
       aSMPClient.withHttpClientSettings (aHCS -> {
-        try
-        {
-          aHCS.setSSLContextTrustAll ();
-        }
-        catch (GeneralSecurityException ex)
-        {
-          LOGGER.error ("Error", ex);
-        }
         // TODO Add SMP HTTP outbound proxy settings here
         // If this block is not used, it may be removed
       });
@@ -182,7 +168,7 @@ public final class HREDeliverySender
                                                                             .senderPartyID (sMyAPOIB)
                                                                             .payload (aDoc.getDocumentElement ())
                                                                             .apCAChecker (aAPCAChecker)
-                                                                            .endpointDetailProvider (new AS4EndpointDetailProviderBDXR (aSMPClient).setTransportProfile (ESMPTransportProfile.TRANSPORT_PROFILE_ERACUN_AS4_V1))
+                                                                            .smpClient (aSMPClient)
                                                                             .sbdDocumentConsumer (sbd -> {
                                                                               // Remember SBDH
                                                                               // Instance
@@ -276,7 +262,7 @@ public final class HREDeliverySender
    *        The sending report to be filled.
    */
   static void sendHREDeliveryMessagePredefinedSbdh (@Nonnull final HREDeliverySBDHData aData,
-                                                    @Nonnull final ISMLInfo aSmlInfo,
+                                                    @Nonnull final EHREDeliverySML aSmlInfo,
                                                     @Nonnull final TrustedCAChecker aAPCAChecker,
                                                     @Nonnull @Nonempty final String sDocTypeID,
                                                     @Nonnull @Nonempty final String sProcessID,
@@ -314,20 +300,9 @@ public final class HREDeliverySender
         throw new IllegalStateException ("Failed to parse the process ID '" + sProcessID + "'");
       aSendingReport.setProcessID (aProcessID);
 
-      final BDXRClientReadOnly aSMPClient = new BDXRClientReadOnly (Phase4HREdeliverySender.URL_PROVIDER,
-                                                                    aReceiverID,
-                                                                    aSmlInfo);
+      final HRMPSClientReadOnly aSMPClient = new HRMPSClientReadOnly (aReceiverID, aSmlInfo);
 
       aSMPClient.withHttpClientSettings (aHCS -> {
-        try
-        {
-          aHCS.setSSLContextTrustAll ();
-        }
-        catch (GeneralSecurityException ex)
-        {
-          LOGGER.error ("Error", ex);
-        }
-
         // TODO Add SMP HTTP outbound proxy settings here
         // If this block is not used, it may be removed
       });
@@ -340,7 +315,7 @@ public final class HREDeliverySender
                                                                                 .payloadAndMetadata (aData)
                                                                                 .senderPartyID (sMyAPOIB)
                                                                                 .apCAChecker (aAPCAChecker)
-                                                                                .endpointDetailProvider (new AS4EndpointDetailProviderBDXR (aSMPClient).setTransportProfile (ESMPTransportProfile.TRANSPORT_PROFILE_ERACUN_AS4_V1))
+                                                                                .smpClient (aSMPClient)
                                                                                 .endpointURLConsumer (aSendingReport::setC3EndpointURL)
                                                                                 .technicalContactConsumer (aSendingReport::setC3TechnicalContact)
                                                                                 .certificateConsumer ( (aAPCertificate,
