@@ -231,12 +231,12 @@ public class ServletConfig
       Phase4PeppolDefaultReceiverConfiguration.setSMPClient (new SMPClientReadOnly (URLHelper.getAsURI (sSMPURL)));
       Phase4PeppolDefaultReceiverConfiguration.setAS4EndpointURL (sAPURL);
       Phase4PeppolDefaultReceiverConfiguration.setAPCertificate (aAPCert);
-      LOGGER.info ("phase4 Peppol receiver checks are enabled");
+      LOGGER.info ("phase4 HR eDelivery receiver checks are enabled");
     }
     else
     {
       Phase4PeppolDefaultReceiverConfiguration.setReceiverCheckEnabled (false);
-      LOGGER.warn ("phase4 Peppol receiver checks are disabled");
+      LOGGER.warn ("phase4 HR eDelivery receiver checks are disabled");
     }
   }
 

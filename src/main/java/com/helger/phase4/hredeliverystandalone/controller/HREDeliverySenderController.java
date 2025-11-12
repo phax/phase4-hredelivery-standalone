@@ -49,6 +49,11 @@ public class HREDeliverySenderController
   static final String HEADER_X_TOKEN = "X-Token";
   private static final Logger LOGGER = Phase4LoggerFactory.getLogger (HREDeliverySenderController.class);
 
+  public HREDeliverySenderController ()
+  {
+    LOGGER.info ("Ctor");
+  }
+
   @PostMapping (path = "/sendas4/{senderId}/{receiverId}/{docTypeId}/{processId}",
                 produces = MediaType.APPLICATION_JSON_VALUE)
   public String sendHREDeliveryMessage (@RequestHeader (name = HEADER_X_TOKEN, required = true) final String xtoken,

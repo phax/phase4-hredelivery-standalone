@@ -18,6 +18,7 @@ package com.helger.phase4.hredeliverystandalone;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  * This is the application entrypoint.
@@ -25,6 +26,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author Philip Helger
  */
 @SpringBootApplication
+@ComponentScan (basePackages = "com.helger.phase4.hredeliverystandalone")
 public class Phase4HREdeliveryStandaloneApplication
 {
   public static void main (final String [] args)
