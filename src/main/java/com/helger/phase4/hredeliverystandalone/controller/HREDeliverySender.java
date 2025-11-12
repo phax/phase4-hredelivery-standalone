@@ -21,7 +21,6 @@ import org.w3c.dom.Document;
 
 import com.helger.annotation.Nonempty;
 import com.helger.annotation.concurrent.Immutable;
-import com.helger.base.system.EJavaVersion;
 import com.helger.base.timing.StopWatch;
 import com.helger.base.wrapper.Wrapper;
 import com.helger.hredelivery.commons.sbdh.HREDeliverySBDHData;
@@ -35,12 +34,12 @@ import com.helger.phase4.client.IAS4ClientBuildMessageCallback;
 import com.helger.phase4.hredelivery.Phase4HREdeliverySender;
 import com.helger.phase4.hredelivery.Phase4HREdeliverySender.HREDeliveryUserMessageBuilder;
 import com.helger.phase4.hredelivery.Phase4HREdeliverySender.HREDeliveryUserMessageSBDHBuilder;
-import com.helger.phase4.hredeliverystandalone.APConfig;
 import com.helger.phase4.hredelivery.Phase4HREdeliverySendingReport;
+import com.helger.phase4.hredeliverystandalone.APConfig;
 import com.helger.phase4.logging.Phase4LoggerFactory;
 import com.helger.phase4.model.message.AS4UserMessage;
 import com.helger.phase4.model.message.AbstractAS4Message;
-import com.helger.phase4.profile.peppol.Phase4PeppolHttpClientSettings;
+import com.helger.phase4.profile.hredelivery.Phase4HREDeliveryHttpClientSettings;
 import com.helger.phase4.sender.EAS4UserMessageSendResult;
 import com.helger.phase4.util.Phase4Exception;
 import com.helger.security.certificate.TrustedCAChecker;
@@ -50,8 +49,8 @@ import com.helger.xml.serialize.read.DOMReader;
 import jakarta.annotation.Nonnull;
 
 /**
- * This contains the main Peppol sending code. It was extracted from the controller to make it more
- * readable
+ * This contains the main HR eDelivery sending code. It was extracted from the controller to make it
+ * more readable
  *
  * @author Philip Helger
  */
@@ -69,17 +68,17 @@ public final class HREDeliverySender
    * @param aSmlInfo
    *        The SML to be used for receiver lookup
    * @param aAPCAChecker
-   *        The Peppol CA checker to be used.
+   *        The HR eDelivery CA checker to be used.
    * @param aPayloadBytes
    *        The main business document to be send
    * @param sSenderID
-   *        The Peppol sender Participant ID
+   *        The HR eDelivery sender Participant ID
    * @param sReceiverID
-   *        The Peppol receiver Participant ID
+   *        The HR eDelivery receiver Participant ID
    * @param sDocTypeID
-   *        The Peppol document type ID
+   *        The HR eDelivery document type ID
    * @param sProcessID
-   *        The Peppol process ID
+   *        The HR eDelivery process ID
    * @return The created sending report and never <code>null</code>.
    */
   @Nonnull
@@ -92,10 +91,10 @@ public final class HREDeliverySender
                                                                                    @Nonnull @Nonempty final String sProcessID)
   {
     final IIdentifierFactory aIF = PeppolIdentifierFactory.INSTANCE;
-    final String sMyPeppolSeatID = APConfig.getMyPeppolSeatID ();
+    final String sMyAPOIB = APConfig.getMyAccessPointOIB ();
 
     final Phase4HREdeliverySendingReport aSendingReport = new Phase4HREdeliverySendingReport (aSmlInfo);
-    aSendingReport.setSenderPartyID (sMyPeppolSeatID);
+    aSendingReport.setSenderPartyID (sMyAPOIB);
 
     EAS4UserMessageSendResult eResult = null;
     boolean bExceptionCaught = false;
@@ -159,15 +158,7 @@ public final class HREDeliverySender
         // If this block is not used, it may be removed
       });
 
-      // In the meantime each SMP MUST be able to use SHA-256
-      if (false)
-        if (EJavaVersion.getCurrentVersion ().isNewerOrEqualsThan (EJavaVersion.JDK_17))
-        {
-          // Work around the disabled SHA-1 in XMLDsig issue
-          aSMPClient.setSecureValidation (false);
-        }
-
-      final Phase4PeppolHttpClientSettings aHCS = new Phase4PeppolHttpClientSettings ();
+      final Phase4HREDeliveryHttpClientSettings aHCS = new Phase4HREDeliveryHttpClientSettings ();
       // TODO Add AP HTTP outbound proxy settings here
 
       final HREDeliveryUserMessageBuilder aBuilder = Phase4HREdeliverySender.builder ()
@@ -176,7 +167,7 @@ public final class HREDeliverySender
                                                                             .processID (aProcessID)
                                                                             .senderParticipantID (aSenderID)
                                                                             .receiverParticipantID (aReceiverID)
-                                                                            .senderPartyID (sMyPeppolSeatID)
+                                                                            .senderPartyID (sMyAPOIB)
                                                                             .payload (aDoc.getDocumentElement ())
                                                                             .apCAChecker (aAPCAChecker)
                                                                             .smpClient (aSMPClient)
@@ -223,14 +214,14 @@ public final class HREDeliverySender
                                                                             .disableValidation ();
       final Wrapper <Phase4Exception> aCaughtEx = new Wrapper <> ();
       eResult = aBuilder.sendMessageAndCheckForReceipt (aCaughtEx::set);
-      LOGGER.info ("Peppol client send result: " + eResult);
+      LOGGER.info ("HR eDelivery client send result: " + eResult);
 
       aSendingReport.setAS4SendingResult (eResult);
 
       if (aCaughtEx.isSet ())
       {
         final Phase4Exception ex = aCaughtEx.get ();
-        LOGGER.error ("Error sending Peppol message via AS4", ex);
+        LOGGER.error ("Error sending HR eDelivery message via AS4", ex);
         aSendingReport.setAS4SendingException (ex);
         bExceptionCaught = true;
       }
@@ -238,7 +229,7 @@ public final class HREDeliverySender
     catch (final Exception ex)
     {
       // Mostly errors on HTTP level
-      LOGGER.error ("Error sending Peppol message via AS4", ex);
+      LOGGER.error ("Error sending HR eDelivery message via AS4", ex);
       aSendingReport.setAS4SendingException (ex);
       bExceptionCaught = true;
     }
@@ -264,11 +255,11 @@ public final class HREDeliverySender
    * @param aSmlInfo
    *        The SML to be used for receiver lookup
    * @param aAPCAChecker
-   *        The Peppol CA checker to be used.
+   *        The HR eDelivery CA checker to be used.
    * @param sDocTypeID
-   *        The Peppol document type ID
+   *        The HR eDelivery document type ID
    * @param sProcessID
-   *        The Peppol process ID
+   *        The HR eDelivery process ID
    * @param aSendingReport
    *        The sending report to be filled.
    */
@@ -280,8 +271,8 @@ public final class HREDeliverySender
                                                     @Nonnull final Phase4HREdeliverySendingReport aSendingReport)
   {
     final IIdentifierFactory aIF = PeppolIdentifierFactory.INSTANCE;
-    final String sMyPeppolSeatID = APConfig.getMyPeppolSeatID ();
-    aSendingReport.setSenderPartyID (sMyPeppolSeatID);
+    final String sMyAPOIB = APConfig.getMyAccessPointOIB ();
+    aSendingReport.setSenderPartyID (sMyAPOIB);
 
     EAS4UserMessageSendResult eResult = null;
     boolean bExceptionCaught = false;
@@ -320,21 +311,13 @@ public final class HREDeliverySender
         // If this block is not used, it may be removed
       });
 
-      // In the meantime each SMP MUST be able to use SHA-256
-      if (false)
-        if (EJavaVersion.getCurrentVersion ().isNewerOrEqualsThan (EJavaVersion.JDK_17))
-        {
-          // Work around the disabled SHA-1 in XMLDsig issue
-          aSMPClient.setSecureValidation (false);
-        }
-
-      final Phase4PeppolHttpClientSettings aHCS = new Phase4PeppolHttpClientSettings ();
+      final Phase4HREDeliveryHttpClientSettings aHCS = new Phase4HREDeliveryHttpClientSettings ();
       // TODO Add AP HTTP outbound proxy settings here
 
       final HREDeliveryUserMessageSBDHBuilder aBuilder = Phase4HREdeliverySender.sbdhBuilder ()
                                                                                 .httpClientFactory (aHCS)
                                                                                 .payloadAndMetadata (aData)
-                                                                                .senderPartyID (sMyPeppolSeatID)
+                                                                                .senderPartyID (sMyAPOIB)
                                                                                 .apCAChecker (aAPCAChecker)
                                                                                 .smpClient (aSMPClient)
                                                                                 .endpointURLConsumer (aSendingReport::setC3EndpointURL)
@@ -343,8 +326,7 @@ public final class HREDeliverySender
                                                                                                         aCheckDT,
                                                                                                         eCertCheckResult) -> {
                                                                                   // Determined by
-                                                                                  // SMP
-                                                                                  // lookup
+                                                                                  // SMP lookup
                                                                                   aSendingReport.setC3Cert (aAPCertificate);
                                                                                   aSendingReport.setC3CertCheckDT (aCheckDT);
                                                                                   aSendingReport.setC3CertCheckResult (eCertCheckResult);
@@ -372,14 +354,14 @@ public final class HREDeliverySender
                                                                                 });
       final Wrapper <Phase4Exception> aCaughtEx = new Wrapper <> ();
       eResult = aBuilder.sendMessageAndCheckForReceipt (aCaughtEx::set);
-      LOGGER.info ("Peppol client send result: " + eResult);
+      LOGGER.info ("HR eDelivery client send result: " + eResult);
 
       aSendingReport.setAS4SendingResult (eResult);
 
       if (aCaughtEx.isSet ())
       {
         final Phase4Exception ex = aCaughtEx.get ();
-        LOGGER.error ("Error sending Peppol message via AS4", ex);
+        LOGGER.error ("Error sending HR eDelivery message via AS4", ex);
         aSendingReport.setAS4SendingException (ex);
         bExceptionCaught = true;
       }
@@ -387,7 +369,7 @@ public final class HREDeliverySender
     catch (final Exception ex)
     {
       // Mostly errors on HTTP level
-      LOGGER.error ("Error sending Peppol message via AS4", ex);
+      LOGGER.error ("Error sending HR eDelivery message via AS4", ex);
       aSendingReport.setAS4SendingException (ex);
       bExceptionCaught = true;
     }

@@ -185,7 +185,7 @@ public class ServletConfig
     LOGGER.info ("Successfully loaded configured AS4 private key from the crypto factory");
 
     // Configure the stage correctly
-    final EPeppolNetwork eStage = APConfig.getPeppolStage ();
+    final EPeppolNetwork eStage = APConfig.getHREDeliveryStage ();
 
     final X509Certificate aAPCert = (X509Certificate) aPKE.getCertificate ();
 

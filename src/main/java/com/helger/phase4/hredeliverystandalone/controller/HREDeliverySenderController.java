@@ -39,7 +39,7 @@ import com.helger.phase4.logging.Phase4LoggerFactory;
 import com.helger.security.certificate.TrustedCAChecker;
 
 /**
- * This is the primary REST controller for the APIs to send messages over Peppol.
+ * This is the primary REST controller for the APIs to send messages over HR eDelivery.
  *
  * @author Philip Helger
  */
@@ -51,16 +51,16 @@ public class HREDeliverySenderController
 
   @PostMapping (path = "/sendas4/{senderId}/{receiverId}/{docTypeId}/{processId}",
                 produces = MediaType.APPLICATION_JSON_VALUE)
-  public String sendPeppolMessage (@RequestHeader (name = HEADER_X_TOKEN, required = true) final String xtoken,
-                                   @RequestBody final byte [] aPayloadBytes,
-                                   @PathVariable final String senderId,
-                                   @PathVariable final String receiverId,
-                                   @PathVariable final String docTypeId,
-                                   @PathVariable final String processId)
+  public String sendHREDeliveryMessage (@RequestHeader (name = HEADER_X_TOKEN, required = true) final String xtoken,
+                                        @RequestBody final byte [] aPayloadBytes,
+                                        @PathVariable final String senderId,
+                                        @PathVariable final String receiverId,
+                                        @PathVariable final String docTypeId,
+                                        @PathVariable final String processId)
   {
     if (!APConfig.isSendingEnabled ())
     {
-      LOGGER.info ("Peppol AP sending is disabled");
+      LOGGER.info ("HR eDelivery AP sending is disabled");
       throw new HttpNotFoundException ();
     }
 
@@ -75,7 +75,7 @@ public class HREDeliverySenderController
       throw new HttpForbiddenException ();
     }
 
-    final EPeppolNetwork eStage = APConfig.getPeppolStage ();
+    final EPeppolNetwork eStage = APConfig.getHREDeliveryStage ();
     final EHREDeliverySML eSML = eStage.isProduction () ? EHREDeliverySML.PRODUCTION : EHREDeliverySML.DEMO;
     final TrustedCAChecker aAPCA = eStage.isProduction () ? HREDeliveryTrustedCA.hrEdeliveryFinaProduction ()
                                                           : HREDeliveryTrustedCA.hrEdeliveryFinaDemo ();
@@ -103,14 +103,14 @@ public class HREDeliverySenderController
   }
 
   @PostMapping (path = "/sendsbdh/{docTypeId}/{processId}", produces = MediaType.APPLICATION_JSON_VALUE)
-  public String sendPeppolSbdhMessage (@RequestHeader (name = HEADER_X_TOKEN, required = true) final String xtoken,
-                                       @RequestBody final byte [] aPayloadBytes,
-                                       @PathVariable final String docTypeId,
-                                       @PathVariable final String processId)
+  public String sendHREDeliverySbdhMessage (@RequestHeader (name = HEADER_X_TOKEN, required = true) final String xtoken,
+                                            @RequestBody final byte [] aPayloadBytes,
+                                            @PathVariable final String docTypeId,
+                                            @PathVariable final String processId)
   {
     if (!APConfig.isSendingEnabled ())
     {
-      LOGGER.info ("Peppol AP sending is disabled");
+      LOGGER.info ("HR eDelivery AP sending is disabled");
       throw new HttpNotFoundException ();
     }
 
@@ -125,7 +125,7 @@ public class HREDeliverySenderController
       throw new HttpForbiddenException ();
     }
 
-    final EPeppolNetwork eStage = APConfig.getPeppolStage ();
+    final EPeppolNetwork eStage = APConfig.getHREDeliveryStage ();
     final EHREDeliverySML eSML = eStage.isProduction () ? EHREDeliverySML.PRODUCTION : EHREDeliverySML.DEMO;
     final TrustedCAChecker aAPCA = eStage.isProduction () ? HREDeliveryTrustedCA.hrEdeliveryFinaProduction ()
                                                           : HREDeliveryTrustedCA.hrEdeliveryFinaDemo ();

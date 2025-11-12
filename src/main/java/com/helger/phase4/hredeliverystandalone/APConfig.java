@@ -37,7 +37,7 @@ public final class APConfig
   }
 
   @Nonnull
-  public static EPeppolNetwork getPeppolStage ()
+  public static EPeppolNetwork getHREDeliveryStage ()
   {
     final String sStageID = getConfig ().getAsString ("hredelivery.stage");
     final EPeppolNetwork ret = EPeppolNetwork.getFromIDOrNull (sStageID);
@@ -47,9 +47,9 @@ public final class APConfig
   }
 
   @Nullable
-  public static String getMyPeppolSeatID ()
+  public static String getMyAccessPointOIB ()
   {
-    return getConfig ().getAsString ("peppol.seatid");
+    return getConfig ().getAsString ("hredelivery.accesspointoib");
   }
 
   @Nullable
@@ -66,11 +66,11 @@ public final class APConfig
 
   public static boolean isSendingEnabled ()
   {
-    return getConfig ().getAsBoolean ("peppol.sending.enabled", true);
+    return getConfig ().getAsBoolean ("hredelivery.sending.enabled", true);
   }
 
   public static boolean isReceivingEnabled ()
   {
-    return getConfig ().getAsBoolean ("peppol.receiving.enabled", true);
+    return getConfig ().getAsBoolean ("hredelivery.receiving.enabled", true);
   }
 }

@@ -68,7 +68,7 @@ public class CustomPeppolIncomingSBDHandlerSPI implements IPhase4PeppolIncomingS
       throw new Phase4Exception ("Peppol AP receiving is disabled");
     }
 
-    final String sMyPeppolSeatID = APConfig.getMyPeppolSeatID ();
+    final String sMyPeppolSeatID = APConfig.getMyAccessPointOIB ();
 
     // Example code snippets how to get data
     LOGGER.info ("Received a new Peppol Message");
