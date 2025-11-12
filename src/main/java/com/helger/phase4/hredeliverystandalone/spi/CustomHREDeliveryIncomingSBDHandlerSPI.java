@@ -49,9 +49,9 @@ import jakarta.annotation.Nonnull;
  * @author Philip Helger
  */
 @IsSPIImplementation
-public class CustomPeppolIncomingSBDHandlerSPI implements IPhase4PeppolIncomingSBDHandlerSPI
+public class CustomHREDeliveryIncomingSBDHandlerSPI implements IPhase4PeppolIncomingSBDHandlerSPI
 {
-  private static final Logger LOGGER = Phase4LoggerFactory.getLogger (CustomPeppolIncomingSBDHandlerSPI.class);
+  private static final Logger LOGGER = Phase4LoggerFactory.getLogger (CustomHREDeliveryIncomingSBDHandlerSPI.class);
 
   public void handleIncomingSBD (@Nonnull final IAS4IncomingMessageMetadata aMessageMetadata,
                                  @Nonnull final HttpHeaderMap aHeaders,
