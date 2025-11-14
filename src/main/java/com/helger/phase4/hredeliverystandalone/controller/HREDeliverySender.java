@@ -36,7 +36,8 @@ import com.helger.phase4.hredelivery.Phase4HREdeliverySender.HREDeliveryUserMess
 import com.helger.phase4.hredelivery.Phase4HREdeliverySender.HREDeliveryUserMessageSBDHBuilder;
 import com.helger.phase4.hredelivery.Phase4HREdeliverySendingReport;
 import com.helger.phase4.hredeliverystandalone.APConfig;
-import com.helger.phase4.hredeliverystandalone.HRMPSClientReadOnlyLenient;
+import com.helger.phase4.hredeliverystandalone.demo.HRMPSClientReadOnlyLenient;
+import com.helger.phase4.hredeliverystandalone.demo.Phase4HREDeliveryHttpClientSettingsLenient;
 import com.helger.phase4.logging.Phase4LoggerFactory;
 import com.helger.phase4.model.message.AS4UserMessage;
 import com.helger.phase4.model.message.AbstractAS4Message;
@@ -156,7 +157,7 @@ public final class HREDeliverySender
         // If this block is not used, it may be removed
       });
 
-      final Phase4HREDeliveryHttpClientSettings aHCS = new Phase4HREDeliveryHttpClientSettings ();
+      final Phase4HREDeliveryHttpClientSettings aHCS = new Phase4HREDeliveryHttpClientSettingsLenient ();
       // TODO Add AP HTTP outbound proxy settings here
 
       final HREDeliveryUserMessageBuilder aBuilder = Phase4HREdeliverySender.builder ()
@@ -307,7 +308,7 @@ public final class HREDeliverySender
         // If this block is not used, it may be removed
       });
 
-      final Phase4HREDeliveryHttpClientSettings aHCS = new Phase4HREDeliveryHttpClientSettings ();
+      final Phase4HREDeliveryHttpClientSettings aHCS = new Phase4HREDeliveryHttpClientSettingsLenient ();
       // TODO Add AP HTTP outbound proxy settings here
 
       final HREDeliveryUserMessageSBDHBuilder aBuilder = Phase4HREdeliverySender.sbdhBuilder ()
