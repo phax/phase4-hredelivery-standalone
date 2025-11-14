@@ -114,6 +114,9 @@ public class ServletConfig
     SLF4JBridgeHandler.removeHandlersForRootLogger ();
     SLF4JBridgeHandler.install ();
 
+    GlobalDebug.setDebugModeDirect (AS4Configuration.isGlobalDebug ());
+    GlobalDebug.setProductionModeDirect (AS4Configuration.isGlobalProduction ());
+
     if (GlobalDebug.isDebugMode ())
     {
       RequestTrackerSettings.setLongRunningRequestsCheckEnabled (false);
