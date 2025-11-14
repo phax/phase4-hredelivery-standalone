@@ -25,7 +25,6 @@ import com.helger.base.timing.StopWatch;
 import com.helger.base.wrapper.Wrapper;
 import com.helger.hredelivery.commons.EHREDeliverySML;
 import com.helger.hredelivery.commons.sbdh.HREDeliverySBDHData;
-import com.helger.hredelivery.commons.smp.HRMPSClientReadOnly;
 import com.helger.peppolid.IDocumentTypeIdentifier;
 import com.helger.peppolid.IParticipantIdentifier;
 import com.helger.peppolid.IProcessIdentifier;
@@ -37,6 +36,7 @@ import com.helger.phase4.hredelivery.Phase4HREdeliverySender.HREDeliveryUserMess
 import com.helger.phase4.hredelivery.Phase4HREdeliverySender.HREDeliveryUserMessageSBDHBuilder;
 import com.helger.phase4.hredelivery.Phase4HREdeliverySendingReport;
 import com.helger.phase4.hredeliverystandalone.APConfig;
+import com.helger.phase4.hredeliverystandalone.HRMPSClientReadOnlyLenient;
 import com.helger.phase4.logging.Phase4LoggerFactory;
 import com.helger.phase4.model.message.AS4UserMessage;
 import com.helger.phase4.model.message.AbstractAS4Message;
@@ -149,7 +149,7 @@ public final class HREDeliverySender
         throw new IllegalStateException ("Failed to parse the process ID '" + sProcessID + "'");
       aSendingReport.setProcessID (aProcessID);
 
-      final HRMPSClientReadOnly aSMPClient = new HRMPSClientReadOnly (aReceiverID, aSmlInfo);
+      final HRMPSClientReadOnlyLenient aSMPClient = new HRMPSClientReadOnlyLenient (aReceiverID, aSmlInfo);
 
       aSMPClient.withHttpClientSettings (aHCS -> {
         // TODO Add SMP HTTP outbound proxy settings here
@@ -300,7 +300,7 @@ public final class HREDeliverySender
         throw new IllegalStateException ("Failed to parse the process ID '" + sProcessID + "'");
       aSendingReport.setProcessID (aProcessID);
 
-      final HRMPSClientReadOnly aSMPClient = new HRMPSClientReadOnly (aReceiverID, aSmlInfo);
+      final HRMPSClientReadOnlyLenient aSMPClient = new HRMPSClientReadOnlyLenient (aReceiverID, aSmlInfo);
 
       aSMPClient.withHttpClientSettings (aHCS -> {
         // TODO Add SMP HTTP outbound proxy settings here
