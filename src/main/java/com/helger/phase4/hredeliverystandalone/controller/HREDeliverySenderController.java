@@ -27,11 +27,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.helger.base.io.nonblocking.NonBlockingByteArrayInputStream;
 import com.helger.base.string.StringHelper;
 import com.helger.hredelivery.commons.EHREDeliverySML;
+import com.helger.hredelivery.commons.EHREDeliveryStage;
 import com.helger.hredelivery.commons.sbdh.HREDeliverySBDHData;
 import com.helger.hredelivery.commons.sbdh.HREDeliverySBDHDataReadException;
 import com.helger.hredelivery.commons.sbdh.HREDeliverySBDHDataReader;
 import com.helger.hredelivery.commons.security.HREDeliveryTrustedCA;
-import com.helger.peppol.servicedomain.EPeppolNetwork;
 import com.helger.peppolid.factory.PeppolIdentifierFactory;
 import com.helger.phase4.hredelivery.Phase4HREdeliverySendingReport;
 import com.helger.phase4.hredeliverystandalone.APConfig;
@@ -75,7 +75,7 @@ public class HREDeliverySenderController
       throw new HttpForbiddenException ();
     }
 
-    final EPeppolNetwork eStage = APConfig.getHREDeliveryStage ();
+    final EHREDeliveryStage eStage = APConfig.getHREDeliveryStage ();
     final EHREDeliverySML eSML = eStage.isProduction () ? EHREDeliverySML.PRODUCTION : EHREDeliverySML.DEMO;
     final TrustedCAChecker aAPCA = eStage.isProduction () ? HREDeliveryTrustedCA.hrEdeliveryFinaProduction ()
                                                           : HREDeliveryTrustedCA.hrEdeliveryFinaDemo ();
@@ -125,7 +125,7 @@ public class HREDeliverySenderController
       throw new HttpForbiddenException ();
     }
 
-    final EPeppolNetwork eStage = APConfig.getHREDeliveryStage ();
+    final EHREDeliveryStage eStage = APConfig.getHREDeliveryStage ();
     final EHREDeliverySML eSML = eStage.isProduction () ? EHREDeliverySML.PRODUCTION : EHREDeliverySML.DEMO;
     final TrustedCAChecker aAPCA = eStage.isProduction () ? HREDeliveryTrustedCA.hrEdeliveryFinaProduction ()
                                                           : HREDeliveryTrustedCA.hrEdeliveryFinaDemo ();

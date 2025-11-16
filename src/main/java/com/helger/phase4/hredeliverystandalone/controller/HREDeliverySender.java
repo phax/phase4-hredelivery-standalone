@@ -16,6 +16,7 @@
  */
 package com.helger.phase4.hredeliverystandalone.controller;
 
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.w3c.dom.Document;
 
@@ -46,8 +47,6 @@ import com.helger.phase4.sender.EAS4UserMessageSendResult;
 import com.helger.phase4.util.Phase4Exception;
 import com.helger.security.certificate.TrustedCAChecker;
 import com.helger.xml.serialize.read.DOMReader;
-
-import jakarta.annotation.Nonnull;
 
 /**
  * This contains the main HR eDelivery sending code. It was extracted from the controller to make it
@@ -82,14 +81,14 @@ public final class HREDeliverySender
    *        The HR eDelivery process ID
    * @return The created sending report and never <code>null</code>.
    */
-  @Nonnull
-  static Phase4HREdeliverySendingReport sendHREDeliveryMessageCreatingSbdh (@Nonnull final EHREDeliverySML aSmlInfo,
-                                                                            @Nonnull final TrustedCAChecker aAPCAChecker,
-                                                                            @Nonnull final byte [] aPayloadBytes,
-                                                                            @Nonnull @Nonempty final String sSenderID,
-                                                                            @Nonnull @Nonempty final String sReceiverID,
-                                                                            @Nonnull @Nonempty final String sDocTypeID,
-                                                                            @Nonnull @Nonempty final String sProcessID)
+  @NonNull
+  static Phase4HREdeliverySendingReport sendHREDeliveryMessageCreatingSbdh (@NonNull final EHREDeliverySML aSmlInfo,
+                                                                            @NonNull final TrustedCAChecker aAPCAChecker,
+                                                                            @NonNull final byte [] aPayloadBytes,
+                                                                            @NonNull @Nonempty final String sSenderID,
+                                                                            @NonNull @Nonempty final String sReceiverID,
+                                                                            @NonNull @Nonempty final String sDocTypeID,
+                                                                            @NonNull @Nonempty final String sProcessID)
   {
     final IIdentifierFactory aIF = PeppolIdentifierFactory.INSTANCE;
     final String sMyPartyID = APConfig.getMyPartyID ();
@@ -192,7 +191,7 @@ public final class HREDeliverySender
                                                                             .sendingDateTimeConsumer (aSendingReport::setAS4SendingDT)
                                                                             .buildMessageCallback (new IAS4ClientBuildMessageCallback ()
                                                                             {
-                                                                              public void onAS4Message (@Nonnull final AbstractAS4Message <?> aMsg)
+                                                                              public void onAS4Message (@NonNull final AbstractAS4Message <?> aMsg)
                                                                               {
                                                                                 // Created AS4
                                                                                 // fields
@@ -262,12 +261,12 @@ public final class HREDeliverySender
    * @param aSendingReport
    *        The sending report to be filled.
    */
-  static void sendHREDeliveryMessagePredefinedSbdh (@Nonnull final HREDeliverySBDHData aData,
-                                                    @Nonnull final EHREDeliverySML aSmlInfo,
-                                                    @Nonnull final TrustedCAChecker aAPCAChecker,
-                                                    @Nonnull @Nonempty final String sDocTypeID,
-                                                    @Nonnull @Nonempty final String sProcessID,
-                                                    @Nonnull final Phase4HREdeliverySendingReport aSendingReport)
+  static void sendHREDeliveryMessagePredefinedSbdh (@NonNull final HREDeliverySBDHData aData,
+                                                    @NonNull final EHREDeliverySML aSmlInfo,
+                                                    @NonNull final TrustedCAChecker aAPCAChecker,
+                                                    @NonNull @Nonempty final String sDocTypeID,
+                                                    @NonNull @Nonempty final String sProcessID,
+                                                    @NonNull final Phase4HREdeliverySendingReport aSendingReport)
   {
     final IIdentifierFactory aIF = PeppolIdentifierFactory.INSTANCE;
     final String sMyPartyID = APConfig.getMyPartyID ();
@@ -331,7 +330,7 @@ public final class HREDeliverySender
                                                                                 .sendingDateTimeConsumer (aSendingReport::setAS4SendingDT)
                                                                                 .buildMessageCallback (new IAS4ClientBuildMessageCallback ()
                                                                                 {
-                                                                                  public void onAS4Message (@Nonnull final AbstractAS4Message <?> aMsg)
+                                                                                  public void onAS4Message (@NonNull final AbstractAS4Message <?> aMsg)
                                                                                   {
                                                                                     // Created AS4
                                                                                     // fields

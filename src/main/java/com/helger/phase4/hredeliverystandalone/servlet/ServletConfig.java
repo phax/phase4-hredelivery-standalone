@@ -20,6 +20,7 @@ import java.io.File;
 import java.security.KeyStore;
 import java.security.cert.X509Certificate;
 
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
@@ -31,10 +32,10 @@ import com.helger.base.exception.InitializationException;
 import com.helger.base.state.ETriState;
 import com.helger.base.string.StringHelper;
 import com.helger.base.url.URLHelper;
+import com.helger.hredelivery.commons.EHREDeliveryStage;
 import com.helger.hredelivery.commons.security.HREDeliveryTrustedCA;
 import com.helger.httpclient.HttpDebugger;
 import com.helger.mime.CMimeType;
-import com.helger.peppol.servicedomain.EPeppolNetwork;
 import com.helger.phase4.config.AS4Configuration;
 import com.helger.phase4.crypto.AS4CryptoFactoryConfiguration;
 import com.helger.phase4.crypto.AS4CryptoFactoryInMemoryKeyStore;
@@ -60,7 +61,6 @@ import com.helger.web.scope.mgr.WebScopeManager;
 import com.helger.xservlet.requesttrack.RequestTrackerSettings;
 
 import jakarta.activation.CommandMap;
-import jakarta.annotation.Nonnull;
 import jakarta.annotation.PreDestroy;
 import jakarta.servlet.ServletContext;
 
@@ -74,7 +74,7 @@ public class ServletConfig
    *
    * @return the {@link IAS4CryptoFactory} to use. May not be <code>null</code>.
    */
-  @Nonnull
+  @NonNull
   public static AS4CryptoFactoryInMemoryKeyStore getCryptoFactoryToUse ()
   {
     final AS4CryptoFactoryConfiguration ret = AS4CryptoFactoryConfiguration.getDefaultInstance ();
@@ -96,7 +96,7 @@ public class ServletConfig
     return bean;
   }
 
-  private void _init (@Nonnull final ServletContext aSC)
+  private void _init (@NonNull final ServletContext aSC)
   {
     // Do it only once
     if (!WebScopeManager.isGlobalScopePresent ())
@@ -108,7 +108,7 @@ public class ServletConfig
     }
   }
 
-  private static void _initGlobalSettings (@Nonnull final ServletContext aSC)
+  private static void _initGlobalSettings (@NonNull final ServletContext aSC)
   {
     // Logging: JUL to SLF4J
     SLF4JBridgeHandler.removeHandlersForRootLogger ();
@@ -188,7 +188,7 @@ public class ServletConfig
     LOGGER.info ("Successfully loaded configured AS4 private key from the crypto factory");
 
     // Configure the stage correctly
-    final EPeppolNetwork eStage = APConfig.getHREDeliveryStage ();
+    final EHREDeliveryStage eStage = APConfig.getHREDeliveryStage ();
 
     final X509Certificate aAPCert = (X509Certificate) aPKE.getCertificate ();
 
@@ -207,14 +207,12 @@ public class ServletConfig
     {
       // TODO Change from "true" to "false" once you have a Peppol
       // certificate so that an exception is thrown
-      if (true)
-        LOGGER.error ("The provided certificate is not a valid HR eDelivery certificate. Check result: " +
-                      eCheckResult);
-      else
+      if (false)
       {
         throw new InitializationException ("The provided certificate is not a HR eDelivery certificate. Check result: " +
                                            eCheckResult);
       }
+      LOGGER.error ("The provided certificate is not a valid HR eDelivery certificate. Check result: " + eCheckResult);
     }
     else
       LOGGER.info ("Successfully checked that the provided HR eDelivery certificate is valid.");
