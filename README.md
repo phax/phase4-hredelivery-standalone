@@ -1,7 +1,5 @@
 # Standalone HR eDelivery phase4
 
-# ALPHA version
-
 This an example standalone implementation of [phase4](https://github.com/phax/phase4) for the HR eDelivery Network.
 
 This is a template application and NOT ready for production use, because you need to take decisions and add some code.
@@ -10,8 +8,6 @@ Of course phase4 itself is ready for production use - see a list of [known phase
 **Note:** because it is a template application, no releases are created - you have to modify it anyway.
 
 Contact me via email for *commercial support* (see `pom.xml` for the address).
-
-**TODO** The rest of the file needs cleansing
 
 # Functionality
 
@@ -73,7 +69,7 @@ The following list contains the elements not considered for this demo applicatio
 
 ## Building
 
-This application is based on Spring Boot 3.x and uses Apache Maven 3.x and Java 17 (or higher) to build.
+This application is based on Spring Boot 3.x/4.x and uses Apache Maven 3.x and Java 17 (or higher) to build.
 
 ```
 mvn clean install
