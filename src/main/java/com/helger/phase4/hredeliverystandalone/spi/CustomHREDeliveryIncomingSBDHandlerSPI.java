@@ -21,13 +21,12 @@ import org.slf4j.Logger;
 import org.unece.cefact.namespaces.sbdh.StandardBusinessDocument;
 
 import com.helger.annotation.style.IsSPIImplementation;
-import com.helger.collection.commons.ICommonsList;
 import com.helger.hredelivery.commons.sbdh.HREDeliverySBDHData;
 import com.helger.http.header.HttpHeaderMap;
 import com.helger.peppolid.IDocumentTypeIdentifier;
 import com.helger.peppolid.IProcessIdentifier;
-import com.helger.phase4.ebms3header.Ebms3Error;
 import com.helger.phase4.ebms3header.Ebms3UserMessage;
+import com.helger.phase4.error.AS4ErrorList;
 import com.helger.phase4.hredelivery.servlet.IPhase4HREDeliveryIncomingSBDHandlerSPI;
 import com.helger.phase4.hredeliverystandalone.APConfig;
 import com.helger.phase4.incoming.IAS4IncomingMessageMetadata;
@@ -55,7 +54,7 @@ public class CustomHREDeliveryIncomingSBDHandlerSPI implements IPhase4HREDeliver
                                  @NonNull final IDocumentTypeIdentifier aDocTypeID,
                                  @NonNull final IProcessIdentifier aProcessID,
                                  @NonNull final IAS4IncomingMessageState aIncomingState,
-                                 @NonNull final ICommonsList <Ebms3Error> aProcessingErrorMessages) throws Exception
+                                 @NonNull final AS4ErrorList aProcessingErrorMessages) throws Exception
   {
     if (!APConfig.isReceivingEnabled ())
     {

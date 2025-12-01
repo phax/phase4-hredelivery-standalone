@@ -56,7 +56,7 @@ import com.helger.photon.io.WebFileIO;
 import com.helger.security.certificate.ECertificateCheckResult;
 import com.helger.security.certificate.TrustedCAChecker;
 import com.helger.servlet.ServletHelper;
-import com.helger.smpclient.peppol.SMPClientReadOnly;
+import com.helger.smpclient.bdxr1.BDXRClientReadOnly;
 import com.helger.web.scope.mgr.WebScopeManager;
 import com.helger.xservlet.requesttrack.RequestTrackerSettings;
 
@@ -114,8 +114,9 @@ public class ServletConfig
     SLF4JBridgeHandler.removeHandlersForRootLogger ();
     SLF4JBridgeHandler.install ();
 
-    GlobalDebug.setDebugModeDirect (AS4Configuration.isGlobalDebug ());
+    // Order matters
     GlobalDebug.setProductionModeDirect (AS4Configuration.isGlobalProduction ());
+    GlobalDebug.setDebugModeDirect (AS4Configuration.isGlobalDebug ());
 
     if (GlobalDebug.isDebugMode ())
     {
@@ -229,7 +230,7 @@ public class ServletConfig
       // To process the message even though the receiver is not registered in
       // our AP
       Phase4HREDeliveryDefaultReceiverConfiguration.setReceiverCheckEnabled (true);
-      Phase4HREDeliveryDefaultReceiverConfiguration.setSMPClient (new SMPClientReadOnly (URLHelper.getAsURI (sSMPURL)));
+      Phase4HREDeliveryDefaultReceiverConfiguration.setSMPClient (new BDXRClientReadOnly (URLHelper.getAsURI (sSMPURL)));
       Phase4HREDeliveryDefaultReceiverConfiguration.setAS4EndpointURL (sAPURL);
       Phase4HREDeliveryDefaultReceiverConfiguration.setAPCertificate (aAPCert);
       LOGGER.info ("phase4 HR eDelivery receiver checks are enabled");
