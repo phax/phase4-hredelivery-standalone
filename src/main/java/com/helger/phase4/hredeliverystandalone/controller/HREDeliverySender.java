@@ -313,6 +313,8 @@ public final class HREDeliverySender
       final HREDeliveryUserMessageSBDHBuilder aBuilder = Phase4HREdeliverySender.sbdhBuilder ()
                                                                                 .httpClientFactory (aHCS)
                                                                                 .payloadAndMetadata (aData)
+                                                                                .documentTypeID (aDocTypeID)
+                                                                                .processID (aProcessID)
                                                                                 .senderPartyID (sMyPartyID)
                                                                                 .apCAChecker (aAPCAChecker)
                                                                                 .smpClient (aSMPClient)
