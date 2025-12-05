@@ -58,14 +58,14 @@ public class CustomHREDeliveryIncomingSBDHandlerSPI implements IPhase4HREDeliver
   {
     if (!APConfig.isReceivingEnabled ())
     {
-      LOGGER.info ("Peppol AP receiving is disabled");
-      throw new Phase4Exception ("Peppol AP receiving is disabled");
+      LOGGER.info ("HR eDelivery AP receiving is disabled");
+      throw new Phase4Exception ("HR eDelivery AP receiving is disabled");
     }
 
     final String sMyPartyID = APConfig.getMyPartyID ();
 
     // Example code snippets how to get data
-    LOGGER.info ("Received a new Peppol Message");
+    LOGGER.info ("Received a new HR eDelivery Message");
     LOGGER.info ("  C1 = " + aPeppolSBD.getSenderAsIdentifier ().getURIEncoded ());
     LOGGER.info ("  C2 = " + CertificateHelper.getSubjectCN (aIncomingState.getSigningCertificate ()));
     LOGGER.info ("  C3 = " + sMyPartyID);

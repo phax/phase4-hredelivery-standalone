@@ -21,6 +21,12 @@ import com.helger.hredelivery.commons.smp.HRMPSClientReadOnly;
 import com.helger.peppolid.IParticipantIdentifier;
 import com.helger.smpclient.url.SMPDNSResolutionException;
 
+/**
+ * This is special MPS client that disables TLS hostname verification and should NOT be used in
+ * production.
+ *
+ * @author Philip Helger
+ */
 public class HRMPSClientReadOnlyLenient extends HRMPSClientReadOnly
 {
   public HRMPSClientReadOnlyLenient (final IParticipantIdentifier aParticipantIdentifier,
