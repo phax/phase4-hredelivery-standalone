@@ -230,6 +230,8 @@ public class ServletConfig
       // To process the message even though the receiver is not registered in
       // our AP
       Phase4HREDeliveryDefaultReceiverConfiguration.setReceiverCheckEnabled (true);
+      // It's assumed that the TLS connection to your own SMP is fine. Otherwise you need to tweak
+      // the TLS settings inside the BDXRClientReadOnly
       Phase4HREDeliveryDefaultReceiverConfiguration.setSMPClient (new BDXRClientReadOnly (URLHelper.getAsURI (sSMPURL)));
       Phase4HREDeliveryDefaultReceiverConfiguration.setAS4EndpointURL (sAPURL);
       Phase4HREDeliveryDefaultReceiverConfiguration.setAPCertificate (aAPCert);
