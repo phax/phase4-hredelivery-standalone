@@ -60,7 +60,7 @@ public class SpringBootAS4Servlet extends AbstractXServlet
           aRequestHandler.setIncomingProfileSelector (new AS4IncomingProfileSelectorConstant (sAS4ProfileID));
         }
 
-        // Install a global consumer that is called everytime an inbound message triggers an AS4
+        // Install a global consumer that is called every time an inbound message triggers an AS4
         // Error Message
         if (false)
           aRequestHandler.setErrorConsumer ( (aIncomingState, aEbmsErrors, aAS4ErrorMsg) -> {
