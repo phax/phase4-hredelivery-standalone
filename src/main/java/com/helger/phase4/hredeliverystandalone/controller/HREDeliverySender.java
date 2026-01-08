@@ -204,6 +204,7 @@ public final class HREDeliverySender
                                                                                                                              .getConversationId ());
                                                                               }
                                                                             })
+                                                                            .rawResponseConsumer (aSendingReport::setRawHttpResponse)
                                                                             .signalMsgConsumer ( (aSignalMsg,
                                                                                                   aMessageMetadata,
                                                                                                   aState) -> {
@@ -345,6 +346,7 @@ public final class HREDeliverySender
                                                                                                                                  .getConversationId ());
                                                                                   }
                                                                                 })
+                                                                                .rawResponseConsumer (aSendingReport::setRawHttpResponse)
                                                                                 .signalMsgConsumer ( (aSignalMsg,
                                                                                                       aMessageMetadata,
                                                                                                       aState) -> {
