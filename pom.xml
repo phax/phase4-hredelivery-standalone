@@ -24,7 +24,7 @@
   <parent>
     <groupId>com.helger.phase4</groupId>
     <artifactId>phase4-parent-pom</artifactId>
-    <version>4.2.3-SNAPSHOT</version>
+    <version>4.2.3</version>
   </parent>
   <artifactId>phase4-hredelivery-standalone</artifactId>
   <name>phase4-hreedelivery-standalone</name>
@@ -56,7 +56,6 @@
 
   <!-- Enable when using a SNAPSHOT version: -->
   <!--
-  -->
   <repositories>
     <repository>
       <name>Central Portal Snapshots</name>
@@ -70,6 +69,7 @@
       </snapshots>
     </repository>
   </repositories>
+  -->
 
   <properties>
     <spring-boot.version>4.0.1</spring-boot.version>
