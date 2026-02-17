@@ -17,6 +17,8 @@
 package com.helger.phase4.hredeliverystandalone.servlet;
 
 import org.jspecify.annotations.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.helger.base.string.StringHelper;
 import com.helger.http.EHttpMethod;
@@ -33,6 +35,8 @@ import com.helger.xservlet.AbstractXServlet;
 
 public class SpringBootAS4Servlet extends AbstractXServlet
 {
+  private static final Logger LOGGER = LoggerFactory.getLogger (SpringBootAS4Servlet.class);
+
   public SpringBootAS4Servlet ()
   {
     // Multipart is handled specifically inside
@@ -64,7 +68,10 @@ public class SpringBootAS4Servlet extends AbstractXServlet
         // Error Message
         if (false)
           aRequestHandler.setErrorConsumer ( (aMessageMetdata, aIncomingState, aEbmsErrors, aAS4ErrorMsg) -> {
-            // TODO
+            LOGGER.error ("!!! An AS4 error was created for incoming request " +
+                          aMessageMetdata.getIncomingUniqueID ());
+            LOGGER.error ("   Found " + aEbmsErrors.size () + " errors");
+            LOGGER.error ("   The created AS4 error message has the AS4 Message ID " + aAS4ErrorMsg.getMessagingID ());
           });
       }
 
