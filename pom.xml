@@ -24,7 +24,7 @@
   <parent>
     <groupId>com.helger.phase4</groupId>
     <artifactId>phase4-parent-pom</artifactId>
-    <version>4.2.7</version>
+    <version>4.3.0</version>
   </parent>
   <artifactId>phase4-hredelivery-standalone</artifactId>
   <name>phase4-hreedelivery-standalone</name>
@@ -85,13 +85,6 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <dependency>
-        <groupId>com.helger.peppol</groupId>
-        <artifactId>peppol-commons-parent-pom</artifactId>
-        <version>12.3.8</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -120,14 +113,6 @@
     <dependency>
       <groupId>com.helger.phase4</groupId>
       <artifactId>phase4-lib</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.helger.peppol</groupId>
-      <artifactId>peppol-smp-client</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.helger.peppol</groupId>
-      <artifactId>hredelivery-commons</artifactId>
     </dependency>
     <dependency>
       <groupId>com.helger.phase4</groupId>

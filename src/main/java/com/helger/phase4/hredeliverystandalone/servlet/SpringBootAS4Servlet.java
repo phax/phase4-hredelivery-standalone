@@ -63,7 +63,7 @@ public class SpringBootAS4Servlet extends AbstractXServlet
         // Install a global consumer that is called every time an inbound message triggers an AS4
         // Error Message
         if (false)
-          aRequestHandler.setErrorConsumer ( (aIncomingState, aEbmsErrors, aAS4ErrorMsg) -> {
+          aRequestHandler.setErrorConsumer ( (aMessageMetdata, aIncomingState, aEbmsErrors, aAS4ErrorMsg) -> {
             // TODO
           });
       }
