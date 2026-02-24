@@ -170,7 +170,7 @@ public class ServletConfig
     // resources, it can be configured here
     {
       final Phase4HREDeliveryHttpClientSettings aHCS = new Phase4HREDeliveryHttpClientSettings ();
-      // TODO eventually configure an outbound HTTP proxy here as well
+      APConfig.applyHttpProxySettings (aHCS);
       HREDeliveryCRLDownloader.setAsDefaultCRLCache (aHCS);
     }
 
@@ -232,7 +232,9 @@ public class ServletConfig
       Phase4HREDeliveryDefaultReceiverConfiguration.setReceiverCheckEnabled (true);
       // It's assumed that the TLS connection to your own SMP is fine. Otherwise you need to tweak
       // the TLS settings inside the BDXRClientReadOnly
-      Phase4HREDeliveryDefaultReceiverConfiguration.setSMPClient (new BDXRClientReadOnly (URLHelper.getAsURI (sSMPURL)));
+      final BDXRClientReadOnly aReceiverCheckSMPClient = new BDXRClientReadOnly (URLHelper.getAsURI (sSMPURL));
+      APConfig.applyHttpProxySettings (aReceiverCheckSMPClient.httpClientSettings ());
+      Phase4HREDeliveryDefaultReceiverConfiguration.setSMPClient (aReceiverCheckSMPClient);
       Phase4HREDeliveryDefaultReceiverConfiguration.setAS4EndpointURL (sAPURL);
       Phase4HREDeliveryDefaultReceiverConfiguration.setAPCertificate (aAPCert);
       LOGGER.info ("phase4 HR eDelivery receiver checks are enabled");

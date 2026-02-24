@@ -150,14 +150,10 @@ public final class HREDeliverySender
       aSendingReport.setProcessID (aProcessID);
 
       final HRMPSClientReadOnlyLenient aSMPClient = new HRMPSClientReadOnlyLenient (aReceiverID, aSmlInfo);
-
-      aSMPClient.withHttpClientSettings (aHCS -> {
-        // TODO Add SMP HTTP outbound proxy settings here
-        // If this block is not used, it may be removed
-      });
+      APConfig.applyHttpProxySettings (aSMPClient.httpClientSettings ());
 
       final Phase4HREDeliveryHttpClientSettings aHCS = new Phase4HREDeliveryHttpClientSettingsLenient ();
-      // TODO Add AP HTTP outbound proxy settings here
+      APConfig.applyHttpProxySettings (aHCS);
 
       final HREDeliveryUserMessageBuilder aBuilder = Phase4HREdeliverySender.builder ()
                                                                             .httpClientFactory (aHCS)
@@ -302,14 +298,10 @@ public final class HREDeliverySender
       aSendingReport.setProcessID (aProcessID);
 
       final HRMPSClientReadOnlyLenient aSMPClient = new HRMPSClientReadOnlyLenient (aReceiverID, aSmlInfo);
-
-      aSMPClient.withHttpClientSettings (aHCS -> {
-        // TODO Add SMP HTTP outbound proxy settings here
-        // If this block is not used, it may be removed
-      });
+      APConfig.applyHttpProxySettings (aSMPClient.httpClientSettings ());
 
       final Phase4HREDeliveryHttpClientSettings aHCS = new Phase4HREDeliveryHttpClientSettingsLenient ();
-      // TODO Add AP HTTP outbound proxy settings here
+      APConfig.applyHttpProxySettings (aHCS);
 
       final HREDeliveryUserMessageSBDHBuilder aBuilder = Phase4HREdeliverySender.sbdhBuilder ()
                                                                                 .httpClientFactory (aHCS)
