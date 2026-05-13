@@ -1,7 +1,4 @@
-.classpath
-.project
 .settings/
-
 bin/
 target/
 generated/
@@ -9,4 +6,7 @@ generated/
 private-*.properties
 *.p12
 *.jks
+
+.classpath
 .DS_Store
+.project
