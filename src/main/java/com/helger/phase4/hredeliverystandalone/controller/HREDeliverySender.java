@@ -175,9 +175,9 @@ public final class HREDeliverySender
                                                                             })
                                                                             .endpointURLConsumer (aSendingReport::setC3EndpointURL)
                                                                             .technicalContactConsumer (aSendingReport::setC3TechnicalContact)
-                                                                            .certificateConsumer ( (aAPCertificate,
-                                                                                                    aCheckDT,
-                                                                                                    eCertCheckResult) -> {
+                                                                            .certificateConsumer ((aAPCertificate,
+                                                                                                   aCheckDT,
+                                                                                                   eCertCheckResult) -> {
                                                                               // Determined by SMP
                                                                               // lookup
                                                                               aSendingReport.setC3Cert (aAPCertificate);
@@ -201,9 +201,9 @@ public final class HREDeliverySender
                                                                               }
                                                                             })
                                                                             .rawResponseConsumer (aSendingReport::setRawHttpResponse)
-                                                                            .signalMsgConsumer ( (aSignalMsg,
-                                                                                                  aMessageMetadata,
-                                                                                                  aState) -> {
+                                                                            .signalMsgConsumer ((aSignalMsg,
+                                                                                                 aMessageMetadata,
+                                                                                                 aState) -> {
                                                                               aSendingReport.setAS4ReceivedSignalMsg (aSignalMsg);
                                                                             })
                                                                             .disableValidation ();
@@ -313,9 +313,9 @@ public final class HREDeliverySender
                                                                                 .smpClient (aSMPClient)
                                                                                 .endpointURLConsumer (aSendingReport::setC3EndpointURL)
                                                                                 .technicalContactConsumer (aSendingReport::setC3TechnicalContact)
-                                                                                .certificateConsumer ( (aAPCertificate,
-                                                                                                        aCheckDT,
-                                                                                                        eCertCheckResult) -> {
+                                                                                .certificateConsumer ((aAPCertificate,
+                                                                                                       aCheckDT,
+                                                                                                       eCertCheckResult) -> {
                                                                                   // Determined by
                                                                                   // SMP lookup
                                                                                   aSendingReport.setC3Cert (aAPCertificate);
@@ -339,9 +339,9 @@ public final class HREDeliverySender
                                                                                   }
                                                                                 })
                                                                                 .rawResponseConsumer (aSendingReport::setRawHttpResponse)
-                                                                                .signalMsgConsumer ( (aSignalMsg,
-                                                                                                      aMessageMetadata,
-                                                                                                      aState) -> {
+                                                                                .signalMsgConsumer ((aSignalMsg,
+                                                                                                     aMessageMetadata,
+                                                                                                     aState) -> {
                                                                                   aSendingReport.setAS4ReceivedSignalMsg (aSignalMsg);
                                                                                 });
       final Wrapper <Phase4Exception> aCaughtEx = new Wrapper <> ();
